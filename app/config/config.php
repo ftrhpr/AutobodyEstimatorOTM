@@ -32,9 +32,13 @@ return [
         'httponly' => true,
     ],
 
-    // SMS Configuration (Twilio example - update with your provider)
+    // SMS Configuration
     'sms' => [
-        'provider' => 'twilio', // twilio, messagebird, magti
+        'provider' => 'gosms', // twilio, messagebird, magti, gosms
+        'gosms' => [
+            'api_key' => '5c88b0316e44d076d4677a4860959ef71ce049ce704b559355568a362f40ade1',
+            'brand_name' => 'OTOMOTORS',
+        ],
         'twilio' => [
             'sid' => 'YOUR_TWILIO_SID',
             'token' => 'YOUR_TWILIO_TOKEN',

@@ -30,6 +30,8 @@ class SMS
                 return self::sendViaMessagebird($to, $message);
             case 'magti':
                 return self::sendViaMagti($to, $message);
+            case 'gosms':
+                return self::sendViaGoSMS($to, $message);
             default:
                 throw new Exception("Unknown SMS provider: {$provider}");
         }
@@ -158,6 +160,43 @@ class SMS
         $success = str_contains($response, 'OK') || $httpCode === 200;
 
         self::logSMS($to, $message, 'magti', $success, $response);
+        return $success;
+    }
+
+    private static function sendViaGoSMS(string $to, string $message): bool
+    {
+        $config = self::$config['gosms'];
+
+        $url = 'https://api.gosms.ge/api/sms/send';
+
+        $data = [
+            'api_key' => $config['api_key'],
+            'sender' => $config['brand_name'],
+            'receiver' => $to,
+            'text' => $message,
+        ];
+
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Accept: application/json',
+            ],
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        $result = json_decode($response, true);
+        $success = ($httpCode >= 200 && $httpCode < 300) && 
+                   (isset($result['success']) && $result['success'] === true);
+
+        self::logSMS($to, $message, 'gosms', $success, $response);
         return $success;
     }
 
