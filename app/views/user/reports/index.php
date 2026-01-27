@@ -1,33 +1,36 @@
 <div class="container py-3 py-md-4">
-    <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="d-flex align-items-center">
-            <a href="/dashboard" class="btn btn-light btn-icon me-3 d-md-none">
-                <i class="bi bi-arrow-left"></i>
-            </a>
-            <div>
-                <h4 class="mb-0 fw-bold"><?= __('report.my_reports') ?></h4>
-                <p class="text-muted small mb-0 d-none d-md-block"><?= Lang::getLocale() === 'ka' ? 'თქვენი შეფასებების სია' : 'View your assessment requests' ?></p>
+    <!-- Page Header with gradient -->
+    <div class="dashboard-header mb-4" style="margin: -1rem -0.75rem 0; padding: 1.5rem; border-radius: 0;">
+        <div class="d-flex justify-content-between align-items-center position-relative" style="z-index: 1;">
+            <div class="d-flex align-items-center">
+                <a href="/dashboard" class="btn btn-light btn-icon me-3 d-md-none">
+                    <i class="bi bi-arrow-left"></i>
+                </a>
+                <div>
+                    <h4 class="mb-0 fw-bold text-white"><?= __('report.my_reports') ?></h4>
+                    <p class="opacity-75 small mb-0"><?= Lang::getLocale() === 'ka' ? 'თქვენი შეფასებების სია' : 'View your assessment requests' ?></p>
+                </div>
             </div>
+            <a href="/reports/new" class="btn btn-light shadow-sm">
+                <i class="bi bi-plus-lg"></i>
+                <span class="d-none d-sm-inline ms-1"><?= __('report.new_report') ?></span>
+            </a>
         </div>
-        <a href="/reports/new" class="btn btn-primary">
-            <i class="bi bi-plus-lg"></i>
-            <span class="d-none d-sm-inline ms-1"><?= __('report.new_report') ?></span>
-        </a>
     </div>
 
     <?php if (empty($reports)): ?>
         <!-- Empty State -->
-        <div class="card border-0 shadow-sm">
-            <div class="card-body text-center py-5">
-                <div class="empty-state-icon mb-4">
-                    <i class="bi bi-file-earmark-text text-primary" style="font-size: 4rem; opacity: 0.5;"></i>
-                </div>
-                <h5 class="fw-bold"><?= __('report.no_reports') ?></h5>
-                <p class="text-muted mb-4"><?= Lang::getLocale() === 'ka' ? 'გაგზავნეთ პირველი მოთხოვნა შეფასების მისაღებად' : 'Submit your first request to get an assessment' ?></p>
-                <a href="/reports/new" class="btn btn-primary btn-lg px-4">
-                    <i class="bi bi-plus-lg me-2"></i><?= __('report.submit_report') ?>
-                </a>
+        <div class="card">
+            <div class="card-body py-5">
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+                    <h5 class="fw-bold"><?= __('report.no_reports') ?></h5>
+                    <p class="text-muted mb-4"><?= Lang::getLocale() === 'ka' ? 'გაგზავნეთ პირველი მოთხოვნა შეფასების მისაღებად' : 'Submit your first request to get an assessment' ?></p>
+                    <a href="/reports/new" class="btn btn-primary btn-lg px-4">
+                        <i class="bi bi-plus-lg me-2"></i><?= __('report.submit_report') ?>
+                    </a>
             </div>
         </div>
     <?php else: ?>

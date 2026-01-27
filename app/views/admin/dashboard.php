@@ -1,66 +1,42 @@
 <!-- Statistics Cards -->
 <div class="row g-4 mb-4">
     <div class="col-md-3 col-sm-6">
-        <div class="card stat-card h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <div class="stat-value"><?= $stats['total_reports'] ?></div>
-                        <div class="stat-label"><?= __('admin.total_reports') ?></div>
-                    </div>
-                    <div class="rounded-circle bg-primary bg-opacity-10 p-3">
-                        <i class="bi bi-file-earmark-text text-primary fs-4"></i>
-                    </div>
-                </div>
+        <div class="stat-card h-100 slide-up">
+            <div class="stat-icon stat-icon-primary">
+                <i class="bi bi-file-earmark-text-fill"></i>
             </div>
+            <div class="stat-value"><?= $stats['total_reports'] ?></div>
+            <div class="stat-label"><?= __('admin.total_reports') ?></div>
         </div>
     </div>
 
     <div class="col-md-3 col-sm-6">
-        <div class="card stat-card h-100" style="border-left-color: #ffc107;">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <div class="stat-value" style="color: #ffc107;"><?= $stats['pending_reports'] ?></div>
-                        <div class="stat-label"><?= __('admin.pending_reports') ?></div>
-                    </div>
-                    <div class="rounded-circle bg-warning bg-opacity-10 p-3">
-                        <i class="bi bi-hourglass-split text-warning fs-4"></i>
-                    </div>
-                </div>
+        <div class="stat-card warning h-100 slide-up" style="animation-delay: 50ms;">
+            <div class="stat-icon stat-icon-warning">
+                <i class="bi bi-hourglass-split"></i>
             </div>
+            <div class="stat-value"><?= $stats['pending_reports'] ?></div>
+            <div class="stat-label"><?= __('admin.pending_reports') ?></div>
         </div>
     </div>
 
     <div class="col-md-3 col-sm-6">
-        <div class="card stat-card h-100" style="border-left-color: #17a2b8;">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <div class="stat-value" style="color: #17a2b8;"><?= $stats['today_reports'] ?></div>
-                        <div class="stat-label"><?= __('admin.today_reports') ?></div>
-                    </div>
-                    <div class="rounded-circle bg-info bg-opacity-10 p-3">
-                        <i class="bi bi-calendar-check text-info fs-4"></i>
-                    </div>
-                </div>
+        <div class="stat-card info h-100 slide-up" style="animation-delay: 100ms;">
+            <div class="stat-icon stat-icon-info">
+                <i class="bi bi-calendar-check-fill"></i>
             </div>
+            <div class="stat-value"><?= $stats['today_reports'] ?></div>
+            <div class="stat-label"><?= __('admin.today_reports') ?></div>
         </div>
     </div>
 
     <div class="col-md-3 col-sm-6">
-        <div class="card stat-card h-100" style="border-left-color: #28a745;">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <div class="stat-value" style="color: #28a745;"><?= $stats['total_users'] ?></div>
-                        <div class="stat-label"><?= __('admin.total_users') ?></div>
-                    </div>
-                    <div class="rounded-circle bg-success bg-opacity-10 p-3">
-                        <i class="bi bi-people text-success fs-4"></i>
-                    </div>
-                </div>
+        <div class="stat-card success h-100 slide-up" style="animation-delay: 150ms;">
+            <div class="stat-icon stat-icon-success">
+                <i class="bi bi-people-fill"></i>
             </div>
+            <div class="stat-value"><?= $stats['total_users'] ?></div>
+            <div class="stat-label"><?= __('admin.total_users') ?></div>
         </div>
     </div>
 </div>
@@ -68,31 +44,34 @@
 <div class="row g-4">
     <!-- Pending Reports -->
     <div class="col-lg-4">
-        <div class="card">
-            <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                    <i class="bi bi-hourglass-split me-2"></i>Pending Reviews
-                </h5>
-                <span class="badge bg-dark"><?= count($pendingReports) ?></span>
+        <div class="card h-100">
+            <div class="card-header bg-warning-subtle border-0 d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold text-warning">
+                    <i class="bi bi-hourglass-split me-2"></i><?= Lang::getLocale() === 'ka' ? 'მომლოდინე' : 'Pending Reviews' ?>
+                </h6>
+                <span class="badge bg-warning text-dark"><?= count($pendingReports) ?></span>
             </div>
             <div class="card-body p-0">
                 <?php if (empty($pendingReports)): ?>
-                    <div class="text-center py-4 text-muted">
-                        <i class="bi bi-check-circle display-4"></i>
-                        <p class="mt-2 mb-0">All caught up!</p>
+                    <div class="empty-state py-4">
+                        <div class="empty-state-icon" style="width: 56px; height: 56px; font-size: 1.5rem;">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                        <p class="text-muted mb-0"><?= Lang::getLocale() === 'ka' ? 'ყველა შესრულებულია!' : 'All caught up!' ?></p>
                     </div>
                 <?php else: ?>
                     <div class="list-group list-group-flush">
                         <?php foreach ($pendingReports as $report): ?>
-                            <a href="/admin/reports/<?= $report['id'] ?>" class="list-group-item list-group-item-action">
+                            <a href="/admin/reports/<?= $report['id'] ?>" class="list-group-item list-group-item-action border-0 py-3">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <strong><?= e($report['ticket_number']) ?></strong>
+                                        <strong class="d-block"><?= e($report['ticket_number']) ?></strong>
                                         <?php if ($report['urgency'] === 'urgent'): ?>
-                                            <span class="badge bg-danger ms-1">Urgent</span>
+                                            <span class="badge bg-danger">
+                                                <i class="bi bi-lightning-charge-fill"></i> <?= Lang::getLocale() === 'ka' ? 'სასწრაფო' : 'Urgent' ?>
+                                            </span>
                                         <?php endif; ?>
-                                        <br>
-                                        <small class="text-muted">
+                                        <small class="text-muted d-block mt-1">
                                             <?= e($report['user_name']) ?> &bull;
                                             <?= e($report['make']) ?> <?= e($report['model']) ?>
                                         </small>
@@ -107,9 +86,9 @@
                 <?php endif; ?>
             </div>
             <?php if (!empty($pendingReports)): ?>
-                <div class="card-footer">
-                    <a href="/admin/reports?status=pending" class="btn btn-sm btn-warning w-100">
-                        View All Pending <i class="bi bi-arrow-right ms-1"></i>
+                <div class="card-footer bg-transparent border-0 pt-0">
+                    <a href="/admin/reports?status=pending" class="btn btn-warning w-100">
+                        <?= Lang::getLocale() === 'ka' ? 'ყველა მომლოდინე' : 'View All Pending' ?> <i class="bi bi-arrow-right ms-1"></i>
                     </a>
                 </div>
             <?php endif; ?>

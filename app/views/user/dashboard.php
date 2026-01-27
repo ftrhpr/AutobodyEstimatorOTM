@@ -1,33 +1,52 @@
 <div class="dashboard-header">
-    <div class="container">
-        <h1><?= __('welcome') ?>, <?= e(explode(' ', $currentUser['name'])[0]) ?>!</h1>
-        <p class="mb-0 opacity-90"><?= Lang::getLocale() === 'ka' ? 'მართეთ თქვენი განაცხადები' : 'Manage your damage reports' ?></p>
+    <div class="container position-relative" style="z-index: 1;">
+        <div class="d-flex align-items-center gap-3 mb-2">
+            <div class="d-flex align-items-center justify-content-center rounded-circle bg-white bg-opacity-25" style="width: 56px; height: 56px;">
+                <i class="bi bi-person-fill text-white fs-3"></i>
+            </div>
+            <div>
+                <p class="mb-0 opacity-75" style="font-size: 0.875rem;"><?= Lang::getLocale() === 'ka' ? 'კეთილი იყოს თქვენი მობრძანება' : 'Welcome back' ?></p>
+                <h1 class="mb-0"><?= e(explode(' ', $currentUser['name'])[0]) ?>!</h1>
+            </div>
+        </div>
     </div>
 </div>
 
 <div class="container">
     <!-- Statistics Cards -->
-    <div class="row g-3 mb-4" style="margin-top: -2rem;">
+    <div class="row g-3 mb-4" style="margin-top: -2.5rem;">
         <div class="col-6 col-lg-3">
-            <div class="stat-card h-100">
+            <div class="stat-card h-100 slide-up">
+                <div class="stat-icon stat-icon-primary">
+                    <i class="bi bi-file-earmark-text"></i>
+                </div>
                 <div class="stat-value"><?= $stats['total_reports'] ?></div>
                 <div class="stat-label"><?= __('report.reports') ?></div>
             </div>
         </div>
         <div class="col-6 col-lg-3">
-            <div class="stat-card warning h-100">
+            <div class="stat-card warning h-100 slide-up" style="animation-delay: 50ms;">
+                <div class="stat-icon stat-icon-warning">
+                    <i class="bi bi-hourglass-split"></i>
+                </div>
                 <div class="stat-value"><?= $stats['pending'] ?></div>
                 <div class="stat-label"><?= __('report.status_pending') ?></div>
             </div>
         </div>
         <div class="col-6 col-lg-3">
-            <div class="stat-card info h-100">
+            <div class="stat-card info h-100 slide-up" style="animation-delay: 100ms;">
+                <div class="stat-icon stat-icon-info">
+                    <i class="bi bi-search"></i>
+                </div>
                 <div class="stat-value"><?= $stats['under_review'] ?></div>
                 <div class="stat-label"><?= __('report.status_under_review') ?></div>
             </div>
         </div>
         <div class="col-6 col-lg-3">
-            <div class="stat-card success h-100">
+            <div class="stat-card success h-100 slide-up" style="animation-delay: 150ms;">
+                <div class="stat-icon stat-icon-success">
+                    <i class="bi bi-check-circle"></i>
+                </div>
                 <div class="stat-value"><?= $stats['assessed'] ?></div>
                 <div class="stat-label"><?= __('report.status_assessed') ?></div>
             </div>
@@ -46,8 +65,8 @@
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="bi bi-file-text me-2"></i><?= __('report.my_reports') ?>
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-file-earmark-text me-2 text-primary"></i><?= __('report.my_reports') ?>
                     </h5>
                     <a href="/reports/new" class="btn btn-primary btn-sm d-none d-lg-inline-flex">
                         <i class="bi bi-plus-lg me-1"></i><?= __('report.new_report') ?>
@@ -56,34 +75,35 @@
                 <div class="card-body p-0 p-lg-3">
                     <?php if (empty($recentReports)): ?>
                         <div class="empty-state">
-                            <i class="bi bi-inbox"></i>
+                            <div class="empty-state-icon">
+                                <i class="bi bi-inbox"></i>
+                            </div>
                             <h5><?= __('report.no_reports') ?></h5>
-                            <p><?= Lang::getLocale() === 'ka' ? 'შექმენით თქვენი პირველი განაცხადი' : 'Create your first damage report' ?></p>
+                            <p><?= Lang::getLocale() === 'ka' ? 'შექმენით თქვენი პირველი განაცხადი დაზიანების შესაფასებლად' : 'Create your first damage report to get started' ?></p>
                             <a href="/reports/new" class="btn btn-primary">
                                 <i class="bi bi-plus-lg me-2"></i><?= __('report.new_report') ?>
                             </a>
                         </div>
                     <?php else: ?>
                         <!-- Mobile: Card View -->
-                        <div class="d-lg-none">
+                        <div class="d-lg-none stagger-in">
                             <?php foreach ($recentReports as $report): ?>
-                                <a href="/reports/<?= $report['id'] ?>" class="d-block text-decoration-none border-bottom p-3">
-                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <div>
-                                            <strong class="text-dark"><?= e($report['ticket_number']) ?></strong>
-                                            <div class="small text-muted">
-                                                <?= e($report['make']) ?> <?= e($report['model']) ?> (<?= e($report['year']) ?>)
-                                            </div>
-                                        </div>
+                                <a href="/reports/<?= $report['id'] ?>" class="report-card">
+                                    <div class="report-card-header">
+                                        <div class="report-card-title"><?= e($report['ticket_number']) ?></div>
                                         <span class="badge <?= DamageReport::getStatusBadgeClass($report['status']) ?>">
                                             <?= __('report.status_' . $report['status']) ?>
                                         </span>
                                     </div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">
+                                    <div class="report-card-vehicle">
+                                        <i class="bi bi-car-front-fill me-1"></i>
+                                        <?= e($report['make']) ?> <?= e($report['model']) ?> (<?= e($report['year']) ?>)
+                                    </div>
+                                    <div class="report-card-footer">
+                                        <span class="text-muted">
                                             <i class="bi bi-calendar3 me-1"></i><?= formatDate($report['created_at']) ?>
-                                        </small>
-                                        <i class="bi bi-chevron-right text-muted"></i>
+                                        </span>
+                                        <i class="bi bi-arrow-right text-primary"></i>
                                     </div>
                                 </a>
                             <?php endforeach; ?>
@@ -140,7 +160,7 @@
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-car-front me-2"></i><?= __('vehicle.my_vehicles') ?></h5>
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-car-front-fill me-2 text-primary"></i><?= __('vehicle.my_vehicles') ?></h5>
                     <a href="/vehicles/add" class="btn btn-outline-primary btn-sm">
                         <i class="bi bi-plus-lg"></i>
                     </a>
@@ -148,27 +168,34 @@
                 <div class="card-body p-0">
                     <?php if (empty($vehicles)): ?>
                         <div class="empty-state py-4">
-                            <i class="bi bi-car-front" style="font-size: 3rem;"></i>
+                            <div class="empty-state-icon">
+                                <i class="bi bi-car-front"></i>
+                            </div>
                             <p class="text-muted mb-3"><?= __('vehicle.no_vehicles') ?></p>
                             <a href="/vehicles/add" class="btn btn-sm btn-primary">
                                 <i class="bi bi-plus-lg me-1"></i><?= __('vehicle.add_vehicle') ?>
                             </a>
                         </div>
                     <?php else: ?>
-                        <?php foreach ($vehicles as $vehicle): ?>
-                            <a href="/vehicles/edit/<?= $vehicle['id'] ?>" class="d-flex justify-content-between align-items-center p-3 border-bottom text-decoration-none text-dark">
-                                <div>
-                                    <strong><?= e($vehicle['make']) ?> <?= e($vehicle['model']) ?></strong>
-                                    <div class="small text-muted">
-                                        <?= e($vehicle['year']) ?>
-                                        <?php if ($vehicle['plate_number']): ?>
-                                            &bull; <?= e($vehicle['plate_number']) ?>
-                                        <?php endif; ?>
+                        <div class="stagger-in">
+                            <?php foreach ($vehicles as $vehicle): ?>
+                                <a href="/vehicles/edit/<?= $vehicle['id'] ?>" class="vehicle-card">
+                                    <div class="vehicle-icon">
+                                        <i class="bi bi-car-front-fill"></i>
                                     </div>
-                                </div>
-                                <i class="bi bi-chevron-right text-muted"></i>
-                            </a>
-                        <?php endforeach; ?>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-semibold"><?= e($vehicle['make']) ?> <?= e($vehicle['model']) ?></div>
+                                        <div class="small text-muted">
+                                            <?= e($vehicle['year']) ?>
+                                            <?php if ($vehicle['plate_number']): ?>
+                                                &bull; <?= e($vehicle['plate_number']) ?>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                    <i class="bi bi-chevron-right text-muted"></i>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
                         <div class="p-3">
                             <a href="/vehicles" class="btn btn-outline-primary btn-sm w-100">
                                 <?= Lang::getLocale() === 'ka' ? 'ყველა მანქანა' : 'Manage Vehicles' ?>
@@ -181,7 +208,7 @@
             <!-- Quick Actions (Desktop) -->
             <div class="card mt-4 d-none d-lg-block">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-lightning-charge me-2"></i><?= Lang::getLocale() === 'ka' ? 'სწრაფი მოქმედება' : 'Quick Actions' ?></h5>
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-lightning-charge-fill me-2 text-warning"></i><?= Lang::getLocale() === 'ka' ? 'სწრაფი მოქმედება' : 'Quick Actions' ?></h5>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
