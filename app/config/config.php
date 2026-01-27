@@ -19,9 +19,10 @@ return [
         'host' => 'localhost',
         'database' => 'otoexpre_est',
         'username' => 'otoexpre_est',
-        'password' => '', // Add your database password here
+        'password' => '', // REQUIRED: Add your database password from cPanel here
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_unicode_ci',
+        'debug' => true, // Enable to see detailed error messages
     ],
 
     // Session Configuration
