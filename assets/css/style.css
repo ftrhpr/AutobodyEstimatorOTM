@@ -292,6 +292,22 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1.1rem;
 }
 
+/* Icon Button (Back button, etc.) */
+.btn-icon {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    min-height: 44px;
+    border-radius: var(--radius-lg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon i {
+    font-size: 1.25rem;
+}
+
 /* Floating Action Button */
 .btn-fab {
     position: fixed;
