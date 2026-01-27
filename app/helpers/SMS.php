@@ -167,12 +167,19 @@ class SMS
     {
         $config = self::$config['gosms'];
 
-        $url = 'https://api.gosms.ge/api/sms/send';
+        // GoSMS.ge API endpoint
+        $url = 'https://api.gosms.ge/api/sendsms';
+
+        // Format phone number for GoSMS (995XXXXXXXXX without +)
+        $to = ltrim($to, '+');
+        if (preg_match('/^5\d{8}$/', $to)) {
+            $to = '995' . $to;
+        }
 
         $data = [
             'api_key' => $config['api_key'],
-            'sender' => $config['brand_name'],
-            'receiver' => $to,
+            'from' => $config['brand_name'],
+            'to' => $to,
             'text' => $message,
         ];
 
@@ -190,7 +197,13 @@ class SMS
 
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
         curl_close($ch);
+
+        // Log curl errors if any
+        if ($curlError) {
+            error_log("GoSMS cURL Error: " . $curlError);
+        }
 
         $result = json_decode($response, true);
         $success = ($httpCode >= 200 && $httpCode < 300) && 
