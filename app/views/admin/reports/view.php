@@ -101,11 +101,12 @@
             </div>
             <div class="card-body">
                 <div class="photo-gallery">
-                    <?php foreach ($photos as $photo): ?>
-                        <div class="photo-item" style="aspect-ratio: 1; max-height: 200px;">
-                            <img src="/<?= e($photo['file_path']) ?>" alt="Damage photo"
-                                 style="width:100%; height:100%; object-fit:cover; cursor:pointer;"
-                                 onclick="openLightbox(this.src)">
+                    <?php foreach ($photos as $index => $photo): ?>
+                        <div class="photo-item" data-index="<?= $index ?>">
+                            <img src="/<?= e($photo['file_path']) ?>" alt="Damage photo">
+                            <div class="photo-overlay">
+                                <i class="bi bi-zoom-in text-white fs-3"></i>
+                            </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -364,4 +365,63 @@ function calculateTotal() {
 // Initialize
 updateRemoveButtons();
 calculateTotal();
+
+// Photo Lightbox
+const photos = <?= json_encode(array_map(fn($p) => '/' . $p['file_path'], $photos)) ?>;
+let currentIndex = 0;
+
+document.querySelectorAll('.photo-item').forEach((item, index) => {
+    item.addEventListener('click', () => {
+        currentIndex = index;
+        showPhoto();
+        document.getElementById('photoLightbox').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+});
+
+function showPhoto() {
+    document.getElementById('lightboxImage').src = photos[currentIndex];
+    document.getElementById('lightboxCounter').textContent = currentIndex + 1;
+}
+
+function closeLightbox() {
+    document.getElementById('photoLightbox').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function navigateLightbox(direction) {
+    currentIndex += direction;
+    if (currentIndex < 0) currentIndex = photos.length - 1;
+    if (currentIndex >= photos.length) currentIndex = 0;
+    showPhoto();
+}
+
+document.addEventListener('keydown', (e) => {
+    const lightbox = document.getElementById('photoLightbox');
+    if (!lightbox.classList.contains('active')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') navigateLightbox(-1);
+    if (e.key === 'ArrowRight') navigateLightbox(1);
+});
+
+document.getElementById('photoLightbox').addEventListener('click', (e) => {
+    if (e.target.id === 'photoLightbox') closeLightbox();
+});
 </script>
+
+<!-- Photo Lightbox Modal -->
+<div class="photo-lightbox" id="photoLightbox">
+    <button class="photo-lightbox-close" onclick="closeLightbox()">
+        <i class="bi bi-x-lg"></i>
+    </button>
+    <button class="photo-lightbox-nav photo-lightbox-prev" onclick="navigateLightbox(-1)">
+        <i class="bi bi-chevron-left"></i>
+    </button>
+    <img src="" alt="Damage photo" id="lightboxImage">
+    <button class="photo-lightbox-nav photo-lightbox-next" onclick="navigateLightbox(1)">
+        <i class="bi bi-chevron-right"></i>
+    </button>
+    <div class="photo-lightbox-counter">
+        <span id="lightboxCounter">1</span> / <?= count($photos) ?>
+    </div>
+</div>

@@ -274,3 +274,80 @@
     border-left-color: var(--bs-primary, #6366f1);
 }
 </style>
+
+<!-- Photo Lightbox Modal -->
+<div class="photo-lightbox" id="photoLightbox">
+    <button class="photo-lightbox-close" onclick="closeLightbox()">
+        <i class="bi bi-x-lg"></i>
+    </button>
+    <button class="photo-lightbox-nav photo-lightbox-prev" onclick="navigateLightbox(-1)">
+        <i class="bi bi-chevron-left"></i>
+    </button>
+    <img src="" alt="<?= Lang::getLocale() === 'ka' ? 'დაზიანების ფოტო' : 'Damage photo' ?>" id="lightboxImage">
+    <button class="photo-lightbox-nav photo-lightbox-next" onclick="navigateLightbox(1)">
+        <i class="bi bi-chevron-right"></i>
+    </button>
+    <div class="photo-lightbox-counter">
+        <span id="lightboxCounter">1</span> / <?= count($photos) ?>
+    </div>
+</div>
+
+<script>
+const photos = <?= json_encode(array_map(fn($p) => '/' . $p['file_path'], $photos)) ?>;
+let currentIndex = 0;
+
+// Open lightbox
+document.querySelectorAll('.photo-item').forEach((item, index) => {
+    item.addEventListener('click', () => {
+        currentIndex = index;
+        showPhoto();
+        document.getElementById('photoLightbox').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+});
+
+function showPhoto() {
+    document.getElementById('lightboxImage').src = photos[currentIndex];
+    document.getElementById('lightboxCounter').textContent = currentIndex + 1;
+}
+
+function closeLightbox() {
+    document.getElementById('photoLightbox').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function navigateLightbox(direction) {
+    currentIndex += direction;
+    if (currentIndex < 0) currentIndex = photos.length - 1;
+    if (currentIndex >= photos.length) currentIndex = 0;
+    showPhoto();
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+    const lightbox = document.getElementById('photoLightbox');
+    if (!lightbox.classList.contains('active')) return;
+    
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') navigateLightbox(-1);
+    if (e.key === 'ArrowRight') navigateLightbox(1);
+});
+
+// Close on background click
+document.getElementById('photoLightbox').addEventListener('click', (e) => {
+    if (e.target.id === 'photoLightbox') closeLightbox();
+});
+
+// Swipe support for mobile
+let touchStartX = 0;
+document.getElementById('photoLightbox').addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+});
+
+document.getElementById('photoLightbox').addEventListener('touchend', (e) => {
+    const diff = e.changedTouches[0].screenX - touchStartX;
+    if (Math.abs(diff) > 50) {
+        navigateLightbox(diff > 0 ? -1 : 1);
+    }
+});
+</script>
