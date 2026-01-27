@@ -52,8 +52,8 @@ foreach ($writableDirs as $dir) {
 // Database setup
 if (empty($errors) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $dbHost = $_POST['db_host'] ?? 'localhost';
-    $dbName = $_POST['db_name'] ?? 'auto_damage_db';
-    $dbUser = $_POST['db_user'] ?? 'root';
+    $dbName = $_POST['db_name'] ?? 'otoexpre_est';
+    $dbUser = $_POST['db_user'] ?? 'otoexpre_est';
     $dbPass = $_POST['db_pass'] ?? '';
     $adminUser = $_POST['admin_user'] ?? 'admin';
     $adminPass = $_POST['admin_pass'] ?? '';
@@ -172,12 +172,12 @@ if (empty($errors) && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
                             <div class="mb-3">
                                 <label class="form-label">Database Name</label>
-                                <input type="text" class="form-control" name="db_name" value="auto_damage_db" required>
+                                <input type="text" class="form-control" name="db_name" value="otoexpre_est" required>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">Database Username</label>
-                                <input type="text" class="form-control" name="db_user" value="root" required>
+                                <input type="text" class="form-control" name="db_user" value="otoexpre_est" required>
                             </div>
 
                             <div class="mb-3">

@@ -17,9 +17,9 @@ return [
     // Database Configuration
     'database' => [
         'host' => 'localhost',
-        'database' => 'auto_damage_db',
-        'username' => 'root',
-        'password' => '',
+        'database' => 'otoexpre_est',
+        'username' => 'otoexpre_est',
+        'password' => '', // Add your database password here
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_unicode_ci',
     ],

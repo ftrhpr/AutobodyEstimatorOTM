@@ -1,12 +1,12 @@
 -- Auto Damage Assessment Platform Database Schema
 -- MySQL 8.x Compatible
 
--- Create database
-CREATE DATABASE IF NOT EXISTS auto_damage_db
+-- Create database (if running manually - cPanel users should create via cPanel first)
+CREATE DATABASE IF NOT EXISTS otoexpre_est
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 
-USE auto_damage_db;
+USE otoexpre_est;
 
 -- Users table
 CREATE TABLE users (
