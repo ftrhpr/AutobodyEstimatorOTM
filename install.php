@@ -29,7 +29,7 @@ foreach ($requiredExtensions as $ext) {
 
 // Check write permissions
 $writableDirs = [
-    __DIR__ . '/public_html/uploads',
+    __DIR__ . '/uploads',
     __DIR__ . '/storage/logs',
     __DIR__ . '/storage/cache',
     __DIR__ . '/storage/sessions',

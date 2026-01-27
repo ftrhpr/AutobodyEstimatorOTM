@@ -9,9 +9,9 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Define paths
-define('ROOT_PATH', dirname(__DIR__));
+define('ROOT_PATH', __DIR__);
 define('APP_PATH', ROOT_PATH . '/app');
-define('PUBLIC_PATH', __DIR__);
+define('PUBLIC_PATH', ROOT_PATH);
 define('STORAGE_PATH', ROOT_PATH . '/storage');
 
 // Autoload helpers and config

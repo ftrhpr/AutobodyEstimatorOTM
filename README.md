@@ -88,16 +88,16 @@ Configure your SMS provider in `app/config/config.php`:
 │   ├── lang/           # Language files (Georgian, English)
 │   ├── models/         # Database models
 │   └── views/          # View templates
+├── assets/             # CSS, JS, images
 ├── database/
 │   └── schema.sql      # Database schema
-├── public_html/        # Web root
-│   ├── assets/         # CSS, JS, images
-│   ├── uploads/        # User uploads
-│   └── index.php       # Entry point
-└── storage/
-    ├── cache/
-    ├── logs/
-    └── sessions/
+├── storage/
+│   ├── cache/
+│   ├── logs/
+│   └── sessions/
+├── uploads/            # User uploads
+├── index.php           # Entry point
+└── .htaccess           # URL rewriting
 ```
 
 ## Default Admin Credentials
