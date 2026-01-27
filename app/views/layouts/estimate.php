@@ -46,20 +46,20 @@
 
             <!-- Step Indicator -->
             <div class="step-indicator">
-                <div class="step <?= ($step ?? 1) >= 1 ? 'active' : '' ?> <?= ($step ?? 1) > 1 ? 'completed' : '' ?>">
-                    <div class="step-number">
+                <div class="step-item <?= ($step ?? 1) >= 1 ? 'active' : '' ?> <?= ($step ?? 1) > 1 ? 'completed' : '' ?>">
+                    <div class="step-circle">
                         <?php if (($step ?? 1) > 1): ?>
                             <i class="bi bi-check-lg"></i>
                         <?php else: ?>
                             1
                         <?php endif; ?>
                     </div>
-                    <span class="step-label"><?= Lang::getLocale() === 'ka' ? 'ფოტოები' : 'Photos' ?></span>
+                    <span class="step-text"><?= Lang::getLocale() === 'ka' ? 'ფოტოები' : 'Photos' ?></span>
                 </div>
-                <div class="step-line"></div>
-                <div class="step <?= ($step ?? 1) >= 2 ? 'active' : '' ?>">
-                    <div class="step-number">2</div>
-                    <span class="step-label"><?= Lang::getLocale() === 'ka' ? 'რეგისტრაცია' : 'Register' ?></span>
+                <div class="step-connector <?= ($step ?? 1) > 1 ? 'completed' : '' ?>"></div>
+                <div class="step-item <?= ($step ?? 1) >= 2 ? 'active' : '' ?>">
+                    <div class="step-circle">2</div>
+                    <span class="step-text"><?= Lang::getLocale() === 'ka' ? 'რეგისტრაცია' : 'Register' ?></span>
                 </div>
             </div>
         </div>
