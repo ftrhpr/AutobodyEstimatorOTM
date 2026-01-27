@@ -1,70 +1,94 @@
-<div class="container">
+<div class="container py-3 py-md-4">
+    <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-truck me-2"></i><?= __('vehicle.my_vehicles') ?></h2>
+        <div class="d-flex align-items-center">
+            <a href="/dashboard" class="btn btn-light btn-icon me-3 d-md-none">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            <div>
+                <h4 class="mb-0 fw-bold"><?= __('vehicle.my_vehicles') ?></h4>
+                <p class="text-muted small mb-0 d-none d-md-block"><?= Lang::getLocale() === 'ka' ? 'მართეთ თქვენი მანქანები' : 'Manage your vehicles' ?></p>
+            </div>
+        </div>
         <a href="/vehicles/add" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-2"></i><?= __('vehicle.add_vehicle') ?>
+            <i class="bi bi-plus-lg"></i>
+            <span class="d-none d-sm-inline ms-1"><?= __('vehicle.add_vehicle') ?></span>
         </a>
     </div>
 
     <?php if (empty($vehicles)): ?>
-        <div class="card">
+        <!-- Empty State -->
+        <div class="card border-0 shadow-sm">
             <div class="card-body text-center py-5">
-                <i class="bi bi-truck display-1 text-muted"></i>
-                <h4 class="mt-4"><?= __('vehicle.no_vehicles') ?></h4>
-                <p class="text-muted">Add your first vehicle to start submitting damage reports.</p>
-                <a href="/vehicles/add" class="btn btn-primary btn-lg">
+                <div class="empty-state-icon mb-4">
+                    <i class="bi bi-car-front text-primary" style="font-size: 4rem; opacity: 0.5;"></i>
+                </div>
+                <h5 class="fw-bold"><?= __('vehicle.no_vehicles') ?></h5>
+                <p class="text-muted mb-4"><?= Lang::getLocale() === 'ka' ? 'დაამატეთ მანქანა შეფასების მისაღებად' : 'Add a vehicle to start getting damage assessments' ?></p>
+                <a href="/vehicles/add" class="btn btn-primary btn-lg px-4">
                     <i class="bi bi-plus-lg me-2"></i><?= __('vehicle.add_vehicle') ?>
                 </a>
             </div>
         </div>
     <?php else: ?>
-        <div class="row g-4">
+        <!-- Vehicle Cards -->
+        <div class="row g-3">
             <?php foreach ($vehicles as $vehicle): ?>
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm vehicle-card">
                         <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <h5 class="card-title mb-1">
-                                        <?= e($vehicle['make']) ?> <?= e($vehicle['model']) ?>
-                                    </h5>
-                                    <p class="text-muted mb-2"><?= e($vehicle['year']) ?></p>
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="vehicle-icon">
+                                    <i class="bi bi-car-front-fill text-primary"></i>
                                 </div>
-                                <span class="badge bg-primary">
-                                    <i class="bi bi-car-front"></i>
-                                </span>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item" href="/vehicles/edit/<?= $vehicle['id'] ?>">
+                                                <i class="bi bi-pencil me-2"></i><?= __('edit') ?>
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form method="POST" action="/vehicles/delete/<?= $vehicle['id'] ?>" class="d-inline">
+                                                <?= csrf_field() ?>
+                                                <button type="submit" class="dropdown-item text-danger"
+                                                        data-confirm="<?= __('vehicle.confirm_delete') ?>">
+                                                    <i class="bi bi-trash me-2"></i><?= __('delete') ?>
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
-
-                            <ul class="list-unstyled mb-0">
+                            
+                            <h5 class="card-title fw-bold mb-1">
+                                <?= e($vehicle['make']) ?> <?= e($vehicle['model']) ?>
+                            </h5>
+                            <p class="text-muted mb-3"><?= e($vehicle['year']) ?></p>
+                            
+                            <div class="vehicle-details">
                                 <?php if ($vehicle['plate_number']): ?>
-                                    <li>
-                                        <i class="bi bi-hash text-muted me-2"></i>
-                                        <strong><?= __('vehicle.plate_number') ?>:</strong>
-                                        <?= e($vehicle['plate_number']) ?>
-                                    </li>
+                                    <div class="detail-item">
+                                        <span class="detail-label"><?= __('vehicle.plate_number') ?></span>
+                                        <span class="detail-value fw-semibold"><?= e($vehicle['plate_number']) ?></span>
+                                    </div>
                                 <?php endif; ?>
                                 <?php if ($vehicle['vin']): ?>
-                                    <li>
-                                        <i class="bi bi-upc text-muted me-2"></i>
-                                        <strong><?= __('vehicle.vin') ?>:</strong>
-                                        <?= e($vehicle['vin']) ?>
-                                    </li>
+                                    <div class="detail-item">
+                                        <span class="detail-label"><?= __('vehicle.vin') ?></span>
+                                        <span class="detail-value text-truncate" style="max-width: 120px;"><?= e($vehicle['vin']) ?></span>
+                                    </div>
                                 <?php endif; ?>
-                            </ul>
-                        </div>
-                        <div class="card-footer bg-transparent">
-                            <div class="d-flex gap-2">
-                                <a href="/vehicles/edit/<?= $vehicle['id'] ?>" class="btn btn-sm btn-outline-primary flex-fill">
-                                    <i class="bi bi-pencil me-1"></i><?= __('edit') ?>
-                                </a>
-                                <form method="POST" action="/vehicles/delete/<?= $vehicle['id'] ?>" class="flex-fill">
-                                    <?= csrf_field() ?>
-                                    <button type="submit" class="btn btn-sm btn-outline-danger w-100"
-                                            data-confirm="<?= __('vehicle.confirm_delete') ?>">
-                                        <i class="bi bi-trash me-1"></i><?= __('delete') ?>
-                                    </button>
-                                </form>
                             </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 pt-0">
+                            <a href="/reports/new?vehicle=<?= $vehicle['id'] ?>" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-file-earmark-plus me-2"></i><?= Lang::getLocale() === 'ka' ? 'ახალი შეფასება' : 'New Assessment' ?>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -72,3 +96,37 @@
         </div>
     <?php endif; ?>
 </div>
+
+<style>
+.vehicle-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.vehicle-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+}
+.vehicle-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(99, 102, 241, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+.vehicle-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+}
+.detail-label {
+    color: var(--bs-gray-500);
+}
+</style>

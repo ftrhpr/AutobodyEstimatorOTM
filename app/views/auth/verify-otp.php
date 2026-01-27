@@ -1,60 +1,71 @@
-<h4 class="mb-4 text-center"><?= __('auth.verify_otp') ?></h4>
+<h4 class="mb-3 text-center fw-bold"><?= __('auth.verify_otp') ?></h4>
 
 <p class="text-center text-muted mb-4">
-    We've sent a verification code to<br>
-    <strong><?= e($phone) ?></strong>
+    <?= Lang::getLocale() === 'ka' ? 'კოდი გაიგზავნა ნომერზე' : 'Code sent to' ?><br>
+    <strong class="text-dark"><?= e($phone) ?></strong>
 </p>
 
 <form method="POST" action="/verify-otp" id="otpForm">
     <?= csrf_field() ?>
 
     <div class="mb-4">
-        <label for="otp" class="form-label"><?= __('auth.otp_code') ?></label>
-        <div class="d-flex gap-2 justify-content-center otp-inputs">
-            <input type="text" class="form-control form-control-lg text-center otp-digit"
-                   maxlength="1" pattern="[0-9]" inputmode="numeric" autofocus>
-            <input type="text" class="form-control form-control-lg text-center otp-digit"
-                   maxlength="1" pattern="[0-9]" inputmode="numeric">
-            <input type="text" class="form-control form-control-lg text-center otp-digit"
-                   maxlength="1" pattern="[0-9]" inputmode="numeric">
-            <input type="text" class="form-control form-control-lg text-center otp-digit"
-                   maxlength="1" pattern="[0-9]" inputmode="numeric">
-            <input type="text" class="form-control form-control-lg text-center otp-digit"
-                   maxlength="1" pattern="[0-9]" inputmode="numeric">
-            <input type="text" class="form-control form-control-lg text-center otp-digit"
-                   maxlength="1" pattern="[0-9]" inputmode="numeric">
+        <div class="otp-inputs">
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" autofocus>
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric">
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric">
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric">
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric">
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric">
         </div>
         <input type="hidden" name="otp" id="otpValue">
     </div>
 
-    <button type="submit" class="btn btn-primary w-100 py-2" id="verifyBtn">
-        <i class="bi bi-check-circle me-2"></i>Verify Code
+    <button type="submit" class="btn btn-primary w-100" id="verifyBtn">
+        <i class="bi bi-check-circle me-2"></i><?= Lang::getLocale() === 'ka' ? 'დადასტურება' : 'Verify Code' ?>
     </button>
 </form>
 
 <div class="text-center mt-4">
-    <p class="text-muted mb-2">Didn't receive the code?</p>
-    <button type="button" class="btn btn-link p-0" id="resendBtn">
+    <p class="text-muted mb-2 small"><?= Lang::getLocale() === 'ka' ? 'არ მიიღეთ კოდი?' : "Didn't receive the code?" ?></p>
+    <button type="button" class="btn btn-link p-0 fw-semibold" id="resendBtn">
         <i class="bi bi-arrow-clockwise me-1"></i><?= __('auth.resend_otp') ?>
     </button>
     <p class="text-muted small mt-2" id="resendTimer" style="display: none;">
-        Resend available in <span id="countdown">60</span>s
+        <?= Lang::getLocale() === 'ka' ? 'დაელოდეთ' : 'Resend available in' ?> <span id="countdown" class="fw-bold">60</span><?= Lang::getLocale() === 'ka' ? ' წმ' : 's' ?>
     </p>
 </div>
 
 <style>
 .otp-inputs {
-    gap: 8px;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
 }
 .otp-digit {
-    width: 50px;
-    height: 60px;
-    font-size: 24px;
-    font-weight: bold;
+    width: 48px;
+    height: 56px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.75rem;
+    transition: all 0.2s;
+    background: #fff;
 }
 .otp-digit:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    border-color: #6366f1;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+    outline: none;
+}
+.otp-digit.filled {
+    border-color: #10b981;
+    background: #f0fdf4;
+}
+@media (min-width: 400px) {
+    .otp-digit {
+        width: 52px;
+        height: 60px;
+    }
 }
 </style>
 
@@ -75,6 +86,13 @@ digits.forEach((digit, index) => {
         if (!/^\d*$/.test(value)) {
             e.target.value = '';
             return;
+        }
+
+        // Add visual feedback
+        if (value) {
+            digit.classList.add('filled');
+        } else {
+            digit.classList.remove('filled');
         }
 
         // Move to next input
@@ -108,6 +126,7 @@ digits.forEach((digit, index) => {
         numbers.split('').forEach((num, i) => {
             if (digits[i]) {
                 digits[i].value = num;
+                digits[i].classList.add('filled');
             }
         });
 
@@ -116,6 +135,11 @@ digits.forEach((digit, index) => {
         if (numbers.length === 6) {
             form.submit();
         }
+    });
+    
+    // Focus handling
+    digit.addEventListener('focus', () => {
+        digit.select();
     });
 });
 
@@ -145,6 +169,7 @@ function startCooldown(seconds) {
 
 resendBtn.addEventListener('click', async () => {
     resendBtn.disabled = true;
+    resendBtn.innerHTML = '<span class="loading-spinner me-2"></span><?= Lang::getLocale() === "ka" ? "იგზავნება..." : "Sending..." ?>';
 
     try {
         const response = await fetch('/resend-otp', {
@@ -160,17 +185,26 @@ resendBtn.addEventListener('click', async () => {
 
         if (data.success) {
             startCooldown(60);
-            alert(data.message || 'Code sent successfully');
+            // Clear previous inputs
+            digits.forEach(d => {
+                d.value = '';
+                d.classList.remove('filled');
+            });
+            digits[0].focus();
         } else {
-            alert(data.error || 'Failed to resend code');
+            alert(data.error || '<?= Lang::getLocale() === "ka" ? "შეცდომა. სცადეთ თავიდან." : "Failed to resend code" ?>');
         }
     } catch (error) {
-        alert('An error occurred. Please try again.');
+        alert('<?= Lang::getLocale() === "ka" ? "შეცდომა. სცადეთ თავიდან." : "An error occurred. Please try again." ?>');
     }
 
     resendBtn.disabled = false;
+    resendBtn.innerHTML = '<i class="bi bi-arrow-clockwise me-1"></i><?= __("auth.resend_otp") ?>';
 });
 
 // Start initial cooldown
 startCooldown(60);
+
+// Focus first input on load
+digits[0].focus();
 </script>

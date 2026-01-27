@@ -1,6 +1,6 @@
-<h4 class="mb-4 text-center"><?= __('auth.login') ?></h4>
+<h4 class="mb-4 text-center fw-bold"><?= __('auth.login') ?></h4>
 
-<form method="POST" action="/login">
+<form method="POST" action="/login" autocomplete="off">
     <?= csrf_field() ?>
 
     <div class="mb-3">
@@ -9,7 +9,7 @@
             <span class="input-group-text"><i class="bi bi-phone"></i></span>
             <input type="tel" class="form-control <?= hasError('phone') ? 'is-invalid' : '' ?>"
                    id="phone" name="phone" value="<?= old('phone') ?>"
-                   placeholder="5XX XXX XXX" required>
+                   placeholder="5XX XXX XXX" inputmode="tel" autocomplete="tel" required>
         </div>
         <?php if ($error = error('phone')): ?>
             <div class="invalid-feedback d-block"><?= e($error) ?></div>
@@ -21,7 +21,7 @@
         <div class="input-group">
             <span class="input-group-text"><i class="bi bi-lock"></i></span>
             <input type="password" class="form-control <?= hasError('password') ? 'is-invalid' : '' ?>"
-                   id="password" name="password" required>
+                   id="password" name="password" autocomplete="current-password" required>
             <button class="btn btn-outline-secondary toggle-password" type="button">
                 <i class="bi bi-eye"></i>
             </button>
@@ -31,23 +31,23 @@
         <?php endif; ?>
     </div>
 
-    <div class="mb-3 d-flex justify-content-between align-items-center">
+    <div class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
         <div class="form-check">
             <input type="checkbox" class="form-check-input" id="remember" name="remember">
             <label class="form-check-label" for="remember"><?= __('auth.remember_me') ?></label>
         </div>
-        <a href="/forgot-password" class="text-decoration-none"><?= __('auth.forgot_password') ?></a>
+        <a href="/forgot-password" class="text-decoration-none small"><?= __('auth.forgot_password') ?></a>
     </div>
 
-    <button type="submit" class="btn btn-primary w-100 py-2">
+    <button type="submit" class="btn btn-primary w-100">
         <i class="bi bi-box-arrow-in-right me-2"></i><?= __('auth.login') ?>
     </button>
 </form>
 
-<hr class="my-4">
+<div class="divider"><span><?= __('or') ?></span></div>
 
 <p class="text-center mb-0">
-    Don't have an account?
+    <?= Lang::getLocale() === 'ka' ? 'არ გაქვთ ანგარიში?' : "Don't have an account?" ?>
     <a href="/register" class="text-decoration-none fw-bold"><?= __('auth.register') ?></a>
 </p>
 
@@ -63,5 +63,17 @@ document.querySelector('.toggle-password').addEventListener('click', function() 
         input.type = 'password';
         icon.classList.replace('bi-eye-slash', 'bi-eye');
     }
+});
+
+// Auto-format phone number
+document.getElementById('phone').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length > 9) value = value.slice(0, 9);
+    if (value.length > 6) {
+        value = value.slice(0, 3) + ' ' + value.slice(3, 6) + ' ' + value.slice(6);
+    } else if (value.length > 3) {
+        value = value.slice(0, 3) + ' ' + value.slice(3);
+    }
+    e.target.value = value;
 });
 </script>
