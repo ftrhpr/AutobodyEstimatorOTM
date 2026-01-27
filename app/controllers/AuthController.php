@@ -180,12 +180,87 @@ class AuthController extends BaseController
         $user = User::find($userId);
         Session::setUser($user);
 
+        // Check if coming from estimate flow
+        $fromEstimate = Session::get('from_estimate_flow', false);
+        $guestPhotos = Session::get('guest_photos', []);
+        $vehicleData = Session::get('guest_vehicle_data', []);
+
         // Clean up session
         Session::remove('pending_phone');
         Session::remove('pending_user_id');
+        Session::remove('from_estimate_flow');
+        Session::remove('guest_vehicle_data');
+
+        // If from estimate flow with photos, create a report
+        if ($fromEstimate && !empty($guestPhotos)) {
+            $this->createReportFromEstimate($user, $guestPhotos, $vehicleData);
+            Session::remove('guest_photos');
+            $this->withSuccess(__('auth.registration_success') . ' ' . __('report.report_submitted'));
+            $this->redirect('/reports');
+        }
 
         $this->withSuccess(__('auth.registration_success'));
         $this->redirect('/dashboard');
+    }
+
+    /**
+     * Create report from estimate flow
+     */
+    private function createReportFromEstimate(array $user, array $photos, array $vehicleData): void
+    {
+        require_once APP_PATH . '/models/Vehicle.php';
+        require_once APP_PATH . '/models/DamageReport.php';
+        require_once APP_PATH . '/models/ReportPhoto.php';
+
+        $vehicleId = null;
+
+        // Create vehicle if info provided
+        if (!empty($vehicleData['make']) || !empty($vehicleData['model'])) {
+            $vehicleId = Vehicle::create([
+                'user_id' => $user['id'],
+                'make' => $vehicleData['make'] ?? '',
+                'model' => $vehicleData['model'] ?? '',
+                'year' => $vehicleData['year'] ?? null,
+            ]);
+        }
+
+        // Create the report
+        $reportId = DamageReport::create([
+            'user_id' => $user['id'],
+            'vehicle_id' => $vehicleId,
+            'description' => $vehicleData['description'] ?? 'Uploaded via quick estimate',
+            'status' => 'pending',
+        ]);
+
+        // Move photos from temp to reports directory and save
+        foreach ($photos as $photo) {
+            $tempPath = PUBLIC_PATH . $photo['path'];
+            if (file_exists($tempPath)) {
+                // Create new filename and move to reports directory
+                $newFilename = 'report_' . $reportId . '_' . uniqid() . '_' . pathinfo($photo['filename'], PATHINFO_EXTENSION);
+                $newDir = PUBLIC_PATH . '/uploads/reports/' . $reportId;
+                
+                if (!is_dir($newDir)) {
+                    mkdir($newDir, 0755, true);
+                }
+                
+                $newPath = $newDir . '/' . $newFilename;
+                rename($tempPath, $newPath);
+
+                // Save to database
+                ReportPhoto::create([
+                    'report_id' => $reportId,
+                    'filename' => $newFilename,
+                    'original_name' => $photo['original_name'] ?? $newFilename,
+                ]);
+            }
+        }
+
+        // Clean up temp directory
+        $tempDir = PUBLIC_PATH . '/uploads/temp/' . session_id();
+        if (is_dir($tempDir)) {
+            @rmdir($tempDir);
+        }
     }
 
     public function resendOtp(): void

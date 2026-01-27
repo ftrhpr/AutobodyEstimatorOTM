@@ -16,15 +16,15 @@
                         : 'Professional damage assessment. Upload photos and get detailed repair cost estimates.' ?>
                 </p>
                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center justify-content-lg-start">
-                    <a href="/register" class="btn btn-primary btn-lg px-4 py-3">
-                        <i class="bi bi-person-plus me-2"></i><?= __('auth.register') ?>
+                    <a href="/estimate" class="btn btn-primary btn-lg px-4 py-3">
+                        <i class="bi bi-camera-fill me-2"></i><?= Lang::getLocale() === 'ka' ? 'დაიწყე შეფასება' : 'Start Estimate' ?>
                     </a>
                     <a href="/login" class="btn btn-outline-primary btn-lg px-4 py-3">
                         <?= __('auth.login') ?>
                     </a>
                 </div>
                 <div class="mt-4 d-flex align-items-center justify-content-center justify-content-lg-start gap-4 text-muted small">
-                    <span><i class="bi bi-check-circle-fill text-success me-1"></i> <?= Lang::getLocale() === 'ka' ? '24/7 მხარდაჭერა' : '24/7 Support' ?></span>
+                    <span><i class="bi bi-check-circle-fill text-success me-1"></i> <?= Lang::getLocale() === 'ka' ? 'რეგისტრაცია არ სჭირდება' : 'No registration required' ?></span>
                     <span><i class="bi bi-check-circle-fill text-success me-1"></i> <?= Lang::getLocale() === 'ka' ? 'სწრაფი პასუხი' : 'Quick Response' ?></span>
                 </div>
             </div>
@@ -56,8 +56,8 @@
                     <h5 class="fw-bold mt-3"><?= Lang::getLocale() === 'ka' ? 'ატვირთეთ ფოტოები' : 'Upload Photos' ?></h5>
                     <p class="text-muted small">
                         <?= Lang::getLocale() === 'ka' 
-                            ? 'გადაიღეთ დაზიანების ფოტოები სხვადასხვა კუთხიდან'
-                            : 'Take clear photos of the damage from multiple angles' ?>
+                            ? 'გადაიღეთ დაზიანების ფოტოები - არ საჭიროებს რეგისტრაციას'
+                            : 'Take photos of the damage - no registration needed' ?>
                     </p>
                 </div>
             </div>
@@ -65,13 +65,13 @@
                 <div class="step-card text-center h-100">
                     <div class="step-number">2</div>
                     <div class="stat-icon stat-icon-info mx-auto">
-                        <i class="bi bi-search"></i>
+                        <i class="bi bi-person-plus-fill"></i>
                     </div>
-                    <h5 class="fw-bold mt-3"><?= Lang::getLocale() === 'ka' ? 'ექსპერტის შეფასება' : 'Expert Assessment' ?></h5>
+                    <h5 class="fw-bold mt-3"><?= Lang::getLocale() === 'ka' ? 'შექმენით ანგარიში' : 'Create Account' ?></h5>
                     <p class="text-muted small">
                         <?= Lang::getLocale() === 'ka' 
-                            ? 'ჩვენი სპეციალისტები შეისწავლიან და შეაფასებენ დაზიანებას'
-                            : 'Our certified experts review and assess the damage' ?>
+                            ? 'დაარეგისტრირდით სწრაფად ფოტოების ატვირთვის შემდეგ'
+                            : 'Register quickly after uploading your photos' ?>
                     </p>
                 </div>
             </div>
@@ -89,6 +89,13 @@
                     </p>
                 </div>
             </div>
+        </div>
+        
+        <!-- CTA Button -->
+        <div class="text-center mt-5">
+            <a href="/estimate" class="btn btn-primary btn-lg px-5 py-3 shadow">
+                <i class="bi bi-camera-fill me-2"></i><?= Lang::getLocale() === 'ka' ? 'დაიწყე ახლავე' : 'Get Started Now' ?>
+            </a>
         </div>
     </div>
 </section>

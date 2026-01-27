@@ -9,6 +9,13 @@ return [
     'GET /' => ['HomeController', 'index'],
     'GET /language/{lang}' => ['HomeController', 'setLanguage'],
 
+    // Guest Estimate Flow (Upload photos first, then register)
+    'GET /estimate' => ['EstimateController', 'index'],
+    'POST /estimate/upload' => ['EstimateController', 'upload'],
+    'POST /estimate/remove-photo' => ['EstimateController', 'removePhoto'],
+    'GET /estimate/register' => ['EstimateController', 'showRegister'],
+    'POST /estimate/register' => ['EstimateController', 'register'],
+
     // Authentication Routes
     'GET /login' => ['AuthController', 'showLogin'],
     'POST /login' => ['AuthController', 'login'],

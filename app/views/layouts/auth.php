@@ -17,14 +17,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Georgian:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link href="<?= asset('css/style.css') ?>" rel="stylesheet">
+    <!-- Custom CSS with cache busting -->
+    <link href="<?= asset('css/style.css') ?>?v=2.0.<?= time() ?>" rel="stylesheet">
 </head>
 <body class="auth-page">
     <!-- Language Switcher -->
-    <div style="position: fixed; top: 1rem; right: 1rem; z-index: 100;">
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 100;">
         <div class="dropdown">
-            <button class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" style="backdrop-filter: blur(10px); background: rgba(255,255,255,0.9);">
+            <button class="btn btn-light btn-sm dropdown-toggle shadow-sm" data-bs-toggle="dropdown">
                 <?= Lang::getLocale() === 'ka' ? '🇬🇪 ქარ' : '🇬🇧 EN' ?>
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
@@ -34,7 +34,7 @@
         </div>
     </div>
 
-    <div style="width: 100%; max-width: 440px;">
+    <div class="auth-container">
         <div class="auth-card">
             <div class="auth-header">
                 <i class="bi bi-car-front-fill"></i>
@@ -65,7 +65,7 @@
         </div>
 
         <div class="text-center mt-4">
-            <a href="/" class="text-white text-decoration-none d-inline-flex align-items-center gap-2" style="opacity: 0.9;">
+            <a href="/" class="text-white text-decoration-none opacity-75 d-inline-flex align-items-center gap-2">
                 <i class="bi bi-arrow-left"></i> <?= __('home') ?>
             </a>
         </div>

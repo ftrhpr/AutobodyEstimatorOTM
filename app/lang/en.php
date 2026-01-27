@@ -28,6 +28,7 @@ return [
     'error' => 'Error',
     'success' => 'Success',
     'warning' => 'Warning',
+    'or' => 'or',
 
     // Authentication
     'auth' => [
@@ -37,6 +38,7 @@ return [
         'phone' => 'Phone Number',
         'password' => 'Password',
         'confirm_password' => 'Confirm Password',
+        'password_confirmation' => 'Confirm Password',
         'name' => 'Full Name',
         'email' => 'Email (optional)',
         'forgot_password' => 'Forgot Password?',
@@ -162,6 +164,17 @@ return [
         'unblock_user' => 'Unblock',
         'user_blocked' => 'User has been blocked',
         'user_unblocked' => 'User has been unblocked',
+    ],
+
+    // Estimate Flow
+    'estimate' => [
+        'upload_photos' => 'Upload Damage Photos',
+        'upload_first' => 'Please upload photos first',
+        'max_photos' => 'Maximum 10 photos allowed',
+        'photos_uploaded' => 'photos uploaded',
+        'continue_register' => 'Continue to Register',
+        'start_estimate' => 'Start Estimate',
+        'get_started' => 'Get Started Now',
     ],
 
     // SMS Messages

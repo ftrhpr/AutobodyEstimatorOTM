@@ -45,6 +45,7 @@ return [
         'phone' => 'მობილური',
         'password' => 'პაროლი',
         'confirm_password' => 'გაიმეორეთ პაროლი',
+        'password_confirmation' => 'გაიმეორეთ პაროლი',
         'name' => 'სახელი, გვარი',
         'email' => 'ელ-ფოსტა',
         'forgot_password' => 'დაგავიწყდათ პაროლი?',
@@ -184,6 +185,17 @@ return [
         'unblock_user' => 'განბლოკვა',
         'user_blocked' => 'მომხმარებელი დაიბლოკა',
         'user_unblocked' => 'მომხმარებელი განიბლოკა',
+    ],
+
+    // Estimate Flow
+    'estimate' => [
+        'upload_photos' => 'ატვირთეთ დაზიანების ფოტოები',
+        'upload_first' => 'გთხოვთ ჯერ ატვირთოთ ფოტოები',
+        'max_photos' => 'მაქსიმუმ 10 ფოტო დაშვებულია',
+        'photos_uploaded' => 'ფოტო ატვირთული',
+        'continue_register' => 'გაგრძელება რეგისტრაციაზე',
+        'start_estimate' => 'დაიწყე შეფასება',
+        'get_started' => 'დაიწყე ახლავე',
     ],
 
     // SMS Messages
