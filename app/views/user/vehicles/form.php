@@ -1,29 +1,44 @@
 <div class="container py-3 py-md-4">
     <!-- Page Header -->
-    <div class="d-flex align-items-center mb-4">
-        <a href="/vehicles" class="btn btn-light btn-icon me-3 d-md-none">
-            <i class="bi bi-arrow-left"></i>
-        </a>
-        <div>
-            <h4 class="mb-0 fw-bold">
-                <?= $vehicle ? __('vehicle.edit_vehicle') : __('vehicle.add_vehicle') ?>
-            </h4>
-            <p class="text-muted small mb-0 d-none d-md-block">
-                <?= Lang::getLocale() === 'ka' ? 'შეავსეთ მანქანის ინფორმაცია' : 'Fill in your vehicle information' ?>
-            </p>
+    <div class="dashboard-header mb-4">
+        <div class="d-flex align-items-center position-relative" style="z-index: 1;">
+            <a href="/vehicles" class="btn btn-light btn-icon me-3">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            <div>
+                <h4 class="mb-0 fw-bold text-white">
+                    <?= $vehicle ? __('vehicle.edit_vehicle') : __('vehicle.add_vehicle') ?>
+                </h4>
+                <p class="opacity-75 small mb-0">
+                    <?= Lang::getLocale() === 'ka' ? 'შეავსეთ მანქანის ინფორმაცია' : 'Fill in your vehicle information' ?>
+                </p>
+            </div>
         </div>
     </div>
 
     <div class="row justify-content-center">
         <div class="col-lg-6">
+            <!-- Progress Indicator -->
+            <div class="d-flex align-items-center gap-2 mb-4 text-muted small">
+                <span class="badge bg-primary rounded-pill">1</span>
+                <span class="fw-medium"><?= Lang::getLocale() === 'ka' ? 'მანქანის დეტალები' : 'Vehicle Details' ?></span>
+                <i class="bi bi-chevron-right"></i>
+                <span class="badge bg-light text-muted rounded-pill">2</span>
+                <span><?= Lang::getLocale() === 'ka' ? 'შეფასება' : 'Assessment' ?></span>
+            </div>
+            
             <form method="POST" action="<?= $vehicle ? '/vehicles/edit/' . $vehicle['id'] : '/vehicles/add' ?>">
                 <?= csrf_field() ?>
 
                 <!-- Make -->
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <label for="make" class="form-label fw-semibold">
-                            <i class="bi bi-building me-2 text-primary"></i><?= __('vehicle.make') ?>
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body p-4">
+                        <label for="make" class="form-label fw-semibold d-flex align-items-center">
+                            <span class="icon-box icon-box-sm bg-primary-subtle me-2">
+                                <i class="bi bi-building text-primary"></i>
+                            </span>
+                            <?= __('vehicle.make') ?>
+                            <span class="text-danger ms-1">*</span>
                         </label>
                         <select class="form-select form-select-lg <?= hasError('make') ? 'is-invalid' : '' ?>"
                                 id="make" name="make" required>
@@ -42,10 +57,14 @@
                 </div>
 
                 <!-- Model -->
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <label for="model" class="form-label fw-semibold">
-                            <i class="bi bi-car-front me-2 text-primary"></i><?= __('vehicle.model') ?>
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body p-4">
+                        <label for="model" class="form-label fw-semibold d-flex align-items-center">
+                            <span class="icon-box icon-box-sm bg-primary-subtle me-2">
+                                <i class="bi bi-car-front text-primary"></i>
+                            </span>
+                            <?= __('vehicle.model') ?>
+                            <span class="text-danger ms-1">*</span>
                         </label>
                         <input type="text" class="form-control form-control-lg <?= hasError('model') ? 'is-invalid' : '' ?>"
                                id="model" name="model"
@@ -59,10 +78,14 @@
                 </div>
 
                 <!-- Year -->
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <label for="year" class="form-label fw-semibold">
-                            <i class="bi bi-calendar me-2 text-primary"></i><?= __('vehicle.year') ?>
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body p-4">
+                        <label for="year" class="form-label fw-semibold d-flex align-items-center">
+                            <span class="icon-box icon-box-sm bg-primary-subtle me-2">
+                                <i class="bi bi-calendar text-primary"></i>
+                            </span>
+                            <?= __('vehicle.year') ?>
+                            <span class="text-danger ms-1">*</span>
                         </label>
                         <select class="form-select form-select-lg <?= hasError('year') ? 'is-invalid' : '' ?>"
                                 id="year" name="year" required>
@@ -80,42 +103,56 @@
                     </div>
                 </div>
 
-                <!-- Plate Number (Optional) -->
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <label for="plate_number" class="form-label fw-semibold">
-                            <i class="bi bi-card-text me-2 text-primary"></i><?= __('vehicle.plate_number') ?>
-                            <span class="badge bg-light text-muted fw-normal ms-2"><?= Lang::getLocale() === 'ka' ? 'არასავალდებულო' : 'optional' ?></span>
-                        </label>
-                        <input type="text" class="form-control form-control-lg <?= hasError('plate_number') ? 'is-invalid' : '' ?>"
-                               id="plate_number" name="plate_number"
-                               value="<?= old('plate_number', $vehicle['plate_number'] ?? '') ?>"
-                               placeholder="<?= Lang::getLocale() === 'ka' ? 'მაგ: AA-123-BB' : 'e.g., AA-123-BB' ?>">
-                        <?php if ($error = error('plate_number')): ?>
-                            <div class="invalid-feedback"><?= e($error) ?></div>
-                        <?php endif; ?>
+                <!-- Optional Fields Group -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-light border-0 py-3">
+                        <span class="fw-semibold">
+                            <i class="bi bi-info-circle text-muted me-2"></i>
+                            <?= Lang::getLocale() === 'ka' ? 'დამატებითი ინფორმაცია' : 'Additional Information' ?>
+                        </span>
+                        <span class="badge bg-light text-muted ms-2"><?= Lang::getLocale() === 'ka' ? 'არასავალდებულო' : 'Optional' ?></span>
                     </div>
-                </div>
-
-                <!-- VIN (Optional) -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <label for="vin" class="form-label fw-semibold">
-                            <i class="bi bi-upc me-2 text-primary"></i><?= __('vehicle.vin') ?>
-                            <span class="badge bg-light text-muted fw-normal ms-2"><?= Lang::getLocale() === 'ka' ? 'არასავალდებულო' : 'optional' ?></span>
-                        </label>
-                        <input type="text" class="form-control form-control-lg <?= hasError('vin') ? 'is-invalid' : '' ?>"
-                               id="vin" name="vin"
-                               value="<?= old('vin', $vehicle['vin'] ?? '') ?>"
-                               maxlength="17"
-                               placeholder="<?= Lang::getLocale() === 'ka' ? '17-სიმბოლოიანი VIN' : '17-character VIN' ?>"
-                               style="font-family: monospace; text-transform: uppercase;">
-                        <div class="form-text small">
-                            <?= Lang::getLocale() === 'ka' ? 'მანქანის იდენტიფიკაციის ნომერი ზუსტი ინფორმაციისთვის' : 'Vehicle Identification Number for precise identification' ?>
+                    <div class="card-body p-4">
+                        <!-- Plate Number -->
+                        <div class="mb-4">
+                            <label for="plate_number" class="form-label fw-semibold d-flex align-items-center">
+                                <span class="icon-box icon-box-sm bg-warning-subtle me-2">
+                                    <i class="bi bi-card-text text-warning"></i>
+                                </span>
+                                <?= __('vehicle.plate_number') ?>
+                            </label>
+                            <input type="text" class="form-control form-control-lg <?= hasError('plate_number') ? 'is-invalid' : '' ?>"
+                                   id="plate_number" name="plate_number"
+                                   value="<?= old('plate_number', $vehicle['plate_number'] ?? '') ?>"
+                                   placeholder="<?= Lang::getLocale() === 'ka' ? 'მაგ: AA-123-BB' : 'e.g., AA-123-BB' ?>"
+                                   style="text-transform: uppercase;">
+                            <?php if ($error = error('plate_number')): ?>
+                                <div class="invalid-feedback"><?= e($error) ?></div>
+                            <?php endif; ?>
                         </div>
-                        <?php if ($error = error('vin')): ?>
-                            <div class="invalid-feedback"><?= e($error) ?></div>
-                        <?php endif; ?>
+
+                        <!-- VIN -->
+                        <div class="mb-0">
+                            <label for="vin" class="form-label fw-semibold d-flex align-items-center">
+                                <span class="icon-box icon-box-sm bg-info-subtle me-2">
+                                    <i class="bi bi-upc text-info"></i>
+                                </span>
+                                <?= __('vehicle.vin') ?>
+                            </label>
+                            <input type="text" class="form-control form-control-lg font-monospace <?= hasError('vin') ? 'is-invalid' : '' ?>"
+                                   id="vin" name="vin"
+                                   value="<?= old('vin', $vehicle['vin'] ?? '') ?>"
+                                   maxlength="17"
+                                   placeholder="<?= Lang::getLocale() === 'ka' ? '17-სიმბოლოიანი VIN' : '17-character VIN' ?>"
+                                   style="text-transform: uppercase; letter-spacing: 1px;">
+                            <div class="form-text small mt-2">
+                                <i class="bi bi-lightbulb me-1 text-warning"></i>
+                                <?= Lang::getLocale() === 'ka' ? 'VIN კოდი მანქანის ზუსტი იდენტიფიკაციისთვის' : 'VIN helps with precise vehicle identification' ?>
+                            </div>
+                            <?php if ($error = error('vin')): ?>
+                                <div class="invalid-feedback"><?= e($error) ?></div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
 
@@ -124,8 +161,8 @@
                     <button type="submit" class="btn btn-primary btn-lg py-3">
                         <i class="bi bi-check-lg me-2"></i><?= __('save') ?>
                     </button>
-                    <a href="/vehicles" class="btn btn-outline-secondary">
-                        <?= __('cancel') ?>
+                    <a href="/vehicles" class="btn btn-outline-secondary py-2">
+                        <i class="bi bi-x-lg me-1"></i><?= __('cancel') ?>
                     </a>
                 </div>
             </form>

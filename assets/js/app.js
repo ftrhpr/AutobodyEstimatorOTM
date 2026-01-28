@@ -1,12 +1,22 @@
 /**
  * Auto Damage Assessment Platform
- * Main JavaScript File
+ * Main JavaScript File v3.0
+ * Enhanced UI/UX interactions
  */
 
 // CSRF Token
 const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
-// API Helper
+// Design System Colors
+const colors = {
+    primary: '#5b6cf2',
+    success: '#10b981',
+    warning: '#f59e0b',
+    danger: '#ef4444',
+    info: '#3b82f6'
+};
+
+// API Helper with loading states
 const api = {
     async request(url, options = {}) {
         const defaults = {
@@ -49,19 +59,54 @@ const api = {
     }
 };
 
-// Toast Notifications
+// Enhanced Toast Notifications with icons
 const toast = {
+    icons: {
+        success: 'bi-check-circle-fill',
+        danger: 'bi-x-circle-fill',
+        warning: 'bi-exclamation-triangle-fill',
+        info: 'bi-info-circle-fill'
+    },
+    
     show(message, type = 'info') {
         const container = document.getElementById('toast-container') || this.createContainer();
         const toastEl = document.createElement('div');
-        toastEl.className = `toast align-items-center text-white bg-${type} border-0`;
+        const icon = this.icons[type] || this.icons.info;
+        
+        toastEl.className = `toast align-items-center border-0 shadow-lg`;
         toastEl.setAttribute('role', 'alert');
-        toastEl.innerHTML = `
-            <div class="d-flex">
-                <div class="toast-body">${message}</div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-            </div>
+        toastEl.style.cssText = `
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            overflow: hidden;
         `;
+        
+        toastEl.innerHTML = `
+            <div class="d-flex align-items-center p-3">
+                <div class="me-3" style="width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: var(--bs-${type}-bg-subtle);">
+                    <i class="bi ${icon} text-${type}" style="font-size: 1.25rem;"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="toast-body p-0 text-dark fw-medium">${message}</div>
+                </div>
+                <button type="button" class="btn-close ms-3" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-progress" style="height: 3px; background: var(--bs-${type}); animation: toastProgress 5s linear forwards;"></div>
+        `;
+
+        // Add progress bar animation style if not exists
+        if (!document.getElementById('toast-progress-style')) {
+            const style = document.createElement('style');
+            style.id = 'toast-progress-style';
+            style.textContent = `
+                @keyframes toastProgress {
+                    from { width: 100%; }
+                    to { width: 0%; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
 
         container.appendChild(toastEl);
         const bsToast = new bootstrap.Toast(toastEl, { autohide: true, delay: 5000 });
@@ -73,7 +118,7 @@ const toast = {
     createContainer() {
         const container = document.createElement('div');
         container.id = 'toast-container';
-        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        container.className = 'toast-container position-fixed top-0 end-0 p-3';
         container.style.zIndex = '9999';
         document.body.appendChild(container);
         return container;
@@ -203,23 +248,38 @@ class FileUploader {
     }
 }
 
-// Confirmation Dialog
-function confirm(message, callback) {
+// Enhanced Confirmation Dialog
+function confirm(message, callback, options = {}) {
+    const title = options.title || 'Confirm Action';
+    const confirmText = options.confirmText || 'Confirm';
+    const cancelText = options.cancelText || 'Cancel';
+    const type = options.type || 'danger';
+    
+    const iconMap = {
+        danger: 'bi-exclamation-triangle-fill',
+        warning: 'bi-question-circle-fill',
+        info: 'bi-info-circle-fill'
+    };
+    
     const modal = document.createElement('div');
     modal.className = 'modal fade';
     modal.innerHTML = `
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Confirm</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+                <div class="modal-body text-center p-4 pb-3">
+                    <div style="width: 64px; height: 64px; border-radius: 16px; background: var(--bs-${type}-bg-subtle); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                        <i class="bi ${iconMap[type]} text-${type}" style="font-size: 2rem;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">${title}</h5>
+                    <p class="text-muted mb-0">${message}</p>
                 </div>
-                <div class="modal-body">
-                    <p>${message}</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="confirmBtn">Confirm</button>
+                <div class="modal-footer border-0 justify-content-center gap-2 p-3 pt-0">
+                    <button type="button" class="btn btn-light px-4 py-2" data-bs-dismiss="modal" style="border-radius: 10px; min-width: 100px;">
+                        ${cancelText}
+                    </button>
+                    <button type="button" class="btn btn-${type} px-4 py-2" id="confirmBtn" style="border-radius: 10px; min-width: 100px;">
+                        ${confirmText}
+                    </button>
                 </div>
             </div>
         </div>
@@ -287,7 +347,7 @@ document.querySelectorAll('form').forEach(form => {
     });
 });
 
-// Image lightbox
+// Enhanced Image Lightbox
 class Lightbox {
     constructor() {
         this.createModal();
@@ -298,21 +358,23 @@ class Lightbox {
         modal.id = 'lightbox-modal';
         modal.className = 'modal fade';
         modal.innerHTML = `
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content bg-dark">
-                    <div class="modal-header border-0">
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body p-0 text-center">
-                        <img src="" class="img-fluid" id="lightbox-image">
-                    </div>
-                    <div class="modal-footer border-0 justify-content-between">
-                        <button type="button" class="btn btn-outline-light" id="lightbox-prev">
-                            <i class="bi bi-chevron-left"></i> Previous
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content border-0" style="background: rgba(0, 0, 0, 0.95); border-radius: 16px; overflow: hidden;">
+                    <div class="modal-header border-0 position-absolute w-100" style="z-index: 10; background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, transparent 100%);">
+                        <span class="text-white fw-medium" id="lightbox-counter" style="background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 8px; font-size: 0.875rem;"></span>
+                        <button type="button" class="btn btn-light btn-sm rounded-circle" data-bs-dismiss="modal" style="width: 36px; height: 36px; padding: 0;">
+                            <i class="bi bi-x-lg"></i>
                         </button>
-                        <span class="text-white" id="lightbox-counter"></span>
-                        <button type="button" class="btn btn-outline-light" id="lightbox-next">
-                            Next <i class="bi bi-chevron-right"></i>
+                    </div>
+                    <div class="modal-body p-0 d-flex align-items-center justify-content-center" style="min-height: 60vh;">
+                        <img src="" class="img-fluid" id="lightbox-image" style="max-height: 80vh; object-fit: contain;">
+                    </div>
+                    <div class="modal-footer border-0 position-absolute bottom-0 w-100 justify-content-between px-3" style="z-index: 10; background: linear-gradient(0deg, rgba(0,0,0,0.5) 0%, transparent 100%);">
+                        <button type="button" class="btn btn-light rounded-pill px-4" id="lightbox-prev">
+                            <i class="bi bi-chevron-left me-2"></i>Previous
+                        </button>
+                        <button type="button" class="btn btn-light rounded-pill px-4" id="lightbox-next">
+                            Next<i class="bi bi-chevron-right ms-2"></i>
                         </button>
                     </div>
                 </div>
@@ -328,6 +390,12 @@ class Lightbox {
 
         modal.querySelector('#lightbox-prev').addEventListener('click', () => this.prev());
         modal.querySelector('#lightbox-next').addEventListener('click', () => this.next());
+        
+        // Keyboard navigation
+        modal.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') this.prev();
+            if (e.key === 'ArrowRight') this.next();
+        });
     }
 
     open(images, index = 0) {
@@ -338,8 +406,15 @@ class Lightbox {
     }
 
     showImage() {
+        this.imageEl.style.opacity = '0';
         this.imageEl.src = this.images[this.currentIndex];
-        this.counterEl.textContent = `${this.currentIndex + 1} / ${this.images.length}`;
+        this.counterEl.innerHTML = `<i class="bi bi-image me-2"></i>${this.currentIndex + 1} / ${this.images.length}`;
+        
+        // Fade in animation
+        setTimeout(() => {
+            this.imageEl.style.transition = 'opacity 0.3s ease';
+            this.imageEl.style.opacity = '1';
+        }, 50);
     }
 
     prev() {
@@ -364,11 +439,103 @@ document.querySelectorAll('.photo-gallery').forEach(gallery => {
     });
 });
 
+// Enhanced Button Loading States
+const buttonLoader = {
+    start(button) {
+        button.disabled = true;
+        button.dataset.originalText = button.innerHTML;
+        button.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+            Loading...
+        `;
+    },
+    
+    stop(button) {
+        button.disabled = false;
+        button.innerHTML = button.dataset.originalText;
+    }
+};
+
+// Smooth Scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+});
+
+// Add ripple effect to buttons
+document.querySelectorAll('.btn-primary, .btn-success, .btn-danger, .btn-warning').forEach(button => {
+    button.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.cssText = `
+            position: absolute;
+            width: ${size}px;
+            height: ${size}px;
+            left: ${x}px;
+            top: ${y}px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        `;
+        
+        this.style.position = 'relative';
+        this.style.overflow = 'hidden';
+        this.appendChild(ripple);
+        
+        setTimeout(() => ripple.remove(), 600);
+    });
+});
+
+// Add ripple animation style
+if (!document.getElementById('ripple-style')) {
+    const style = document.createElement('style');
+    style.id = 'ripple-style';
+    style.textContent = `
+        @keyframes ripple {
+            to { transform: scale(4); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Enhanced scroll-based animations
+const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.1
+};
+
+const animateOnScroll = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animated');
+            animateOnScroll.unobserve(entry.target);
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('.stagger-in > *').forEach(el => {
+    animateOnScroll.observe(el);
+});
+
 // Export for use in other scripts
 window.app = {
     api,
     toast,
     FileUploader,
     confirm,
-    lightbox
+    lightbox,
+    buttonLoader,
+    colors
 };

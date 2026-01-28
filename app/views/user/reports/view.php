@@ -1,46 +1,48 @@
 <div class="container py-3 py-md-4">
-    <!-- Mobile Header -->
-    <div class="d-flex align-items-center mb-4">
-        <a href="/reports" class="btn btn-light btn-icon me-3 d-md-none">
-            <i class="bi bi-arrow-left"></i>
-        </a>
-        <div class="flex-grow-1">
-            <h5 class="mb-0 fw-bold"><?= e($report['ticket_number']) ?></h5>
-            <p class="text-muted small mb-0"><?= Lang::getLocale() === 'ka' ? 'გაგზავნილია' : 'Submitted' ?> <?= formatDate($report['created_at']) ?></p>
+    <!-- Page Header with gradient -->
+    <div class="dashboard-header mb-4">
+        <div class="d-flex align-items-center justify-content-between position-relative" style="z-index: 1;">
+            <div class="d-flex align-items-center">
+                <a href="/reports" class="btn btn-light btn-icon me-3">
+                    <i class="bi bi-arrow-left"></i>
+                </a>
+                <div>
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <h5 class="mb-0 fw-bold text-white"><?= e($report['ticket_number']) ?></h5>
+                        <span class="badge badge-<?= $report['status'] ?> px-3 py-2">
+                            <?= __('report.status_' . $report['status']) ?>
+                        </span>
+                    </div>
+                    <p class="opacity-75 small mb-0">
+                        <i class="bi bi-calendar3 me-1"></i>
+                        <?= Lang::getLocale() === 'ka' ? 'გაგზავნილია' : 'Submitted' ?> <?= formatDate($report['created_at']) ?>
+                    </p>
+                </div>
+            </div>
         </div>
-        <span class="badge <?= DamageReport::getStatusBadgeClass($report['status']) ?> px-3 py-2">
-            <?= __('report.status_' . $report['status']) ?>
-        </span>
     </div>
-
-    <!-- Desktop Breadcrumb -->
-    <nav aria-label="breadcrumb" class="mb-4 d-none d-md-block">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/dashboard"><?= __('dashboard') ?></a></li>
-            <li class="breadcrumb-item"><a href="/reports"><?= __('report.reports') ?></a></li>
-            <li class="breadcrumb-item active"><?= e($report['ticket_number']) ?></li>
-        </ol>
-    </nav>
 
     <div class="row g-4">
         <!-- Report Details -->
         <div class="col-lg-8">
             <!-- Status Card (Urgent indicator if applicable) -->
             <?php if ($report['urgency'] === 'urgent'): ?>
-                <div class="alert alert-danger d-flex align-items-center mb-3" role="alert">
-                    <i class="bi bi-lightning-charge-fill me-2 fs-5"></i>
+                <div class="alert alert-danger border-0 shadow-sm d-flex align-items-center mb-3" role="alert" style="border-radius: 12px;">
+                    <div class="icon-box icon-box-sm bg-danger me-3">
+                        <i class="bi bi-lightning-charge-fill text-white"></i>
+                    </div>
                     <div>
-                        <strong><?= Lang::getLocale() === 'ka' ? 'სასწრაფო' : 'Urgent Request' ?></strong>
-                        <span class="d-none d-sm-inline"> - <?= Lang::getLocale() === 'ka' ? 'პრიორიტეტული განხილვა' : 'Priority Processing' ?></span>
+                        <strong><?= Lang::getLocale() === 'ka' ? 'სასწრაფო მოთხოვნა' : 'Urgent Request' ?></strong>
+                        <span class="d-none d-sm-inline text-danger-emphasis opacity-75"> — <?= Lang::getLocale() === 'ka' ? 'პრიორიტეტული განხილვა' : 'Priority Processing' ?></span>
                     </div>
                 </div>
             <?php endif; ?>
 
             <!-- Vehicle Info Card -->
             <div class="card border-0 shadow-sm mb-3">
-                <div class="card-body">
+                <div class="card-body p-4">
                     <div class="d-flex align-items-center mb-3">
-                        <div class="icon-box bg-primary-subtle me-3">
+                        <div class="icon-box icon-box-sm bg-primary-subtle me-3">
                             <i class="bi bi-car-front-fill text-primary"></i>
                         </div>
                         <div>
@@ -52,13 +54,17 @@
                     <div class="row g-3">
                         <?php if ($vehicle['plate_number']): ?>
                             <div class="col-6">
-                                <p class="text-muted small mb-1"><?= __('vehicle.plate_number') ?></p>
-                                <p class="mb-0 fw-semibold"><?= e($vehicle['plate_number']) ?></p>
+                                <div class="p-3 rounded-3" style="background: var(--bs-light);">
+                                    <p class="text-muted small mb-1"><?= __('vehicle.plate_number') ?></p>
+                                    <p class="mb-0 fw-semibold font-monospace"><?= e($vehicle['plate_number']) ?></p>
+                                </div>
                             </div>
                         <?php endif; ?>
                         <div class="col-6">
-                            <p class="text-muted small mb-1"><?= __('report.damage_location') ?></p>
-                            <p class="mb-0 fw-semibold"><?= $damageLocations[$report['damage_location']] ?? $report['damage_location'] ?></p>
+                            <div class="p-3 rounded-3" style="background: var(--bs-light);">
+                                <p class="text-muted small mb-1"><?= __('report.damage_location') ?></p>
+                                <p class="mb-0 fw-semibold"><?= $damageLocations[$report['damage_location']] ?? $report['damage_location'] ?></p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -66,25 +72,31 @@
 
             <!-- Damage Description Card -->
             <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header bg-transparent border-0 py-3">
-                    <h6 class="mb-0 fw-semibold">
-                        <i class="bi bi-chat-text me-2 text-primary"></i><?= __('report.description') ?>
+                <div class="card-header bg-transparent border-0 py-3 px-4">
+                    <h6 class="mb-0 fw-semibold d-flex align-items-center">
+                        <span class="icon-box icon-box-sm bg-success-subtle me-2">
+                            <i class="bi bi-chat-text text-success"></i>
+                        </span>
+                        <?= __('report.description') ?>
                     </h6>
                 </div>
-                <div class="card-body pt-0">
-                    <p class="mb-0"><?= nl2br(e($report['description'])) ?></p>
+                <div class="card-body pt-0 px-4 pb-4">
+                    <p class="mb-0 text-secondary"><?= nl2br(e($report['description'])) ?></p>
                 </div>
             </div>
 
             <!-- Photos Card -->
             <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header bg-transparent border-0 py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0 fw-semibold">
-                        <i class="bi bi-images me-2 text-primary"></i><?= __('report.photos') ?>
+                <div class="card-header bg-transparent border-0 py-3 px-4 d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 fw-semibold d-flex align-items-center">
+                        <span class="icon-box icon-box-sm bg-warning-subtle me-2">
+                            <i class="bi bi-images text-warning"></i>
+                        </span>
+                        <?= __('report.photos') ?>
                     </h6>
-                    <span class="badge bg-secondary-subtle text-secondary"><?= count($photos) ?> <?= Lang::getLocale() === 'ka' ? 'ფოტო' : 'photos' ?></span>
+                    <span class="badge bg-primary-subtle text-primary rounded-pill px-3"><?= count($photos) ?> <?= Lang::getLocale() === 'ka' ? 'ფოტო' : 'photos' ?></span>
                 </div>
-                <div class="card-body pt-0">
+                <div class="card-body pt-0 px-4 pb-4">
                     <div class="photo-gallery">
                         <?php foreach ($photos as $photo): ?>
                             <div class="photo-item">
@@ -151,22 +163,25 @@
         <div class="col-lg-4">
             <!-- Actions Card -->
             <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header bg-transparent border-0 py-3">
-                    <h6 class="mb-0 fw-semibold"><?= __('actions') ?></h6>
+                <div class="card-header bg-transparent border-0 py-3 px-4">
+                    <h6 class="mb-0 fw-semibold d-flex align-items-center">
+                        <i class="bi bi-lightning me-2 text-primary"></i>
+                        <?= __('actions') ?>
+                    </h6>
                 </div>
-                <div class="card-body pt-0">
+                <div class="card-body pt-0 px-4 pb-4">
                     <div class="d-grid gap-2">
                         <?php if ($assessment): ?>
-                            <a href="/reports/<?= $report['id'] ?>/pdf" class="btn btn-success py-2">
-                                <i class="bi bi-file-earmark-pdf me-2"></i><?= __('report.download_pdf') ?>
+                            <a href="/reports/<?= $report['id'] ?>/pdf" class="btn btn-success py-3" style="border-radius: 12px;">
+                                <i class="bi bi-file-earmark-pdf-fill me-2"></i><?= __('report.download_pdf') ?>
                             </a>
                         <?php endif; ?>
 
-                        <a href="/reports/new" class="btn btn-primary py-2">
+                        <a href="/reports/new" class="btn btn-primary py-2" style="border-radius: 12px;">
                             <i class="bi bi-plus-lg me-2"></i><?= __('report.new_report') ?>
                         </a>
 
-                        <a href="/reports" class="btn btn-outline-secondary py-2 d-none d-md-block">
+                        <a href="/reports" class="btn btn-outline-secondary py-2" style="border-radius: 12px;">
                             <i class="bi bi-arrow-left me-2"></i><?= __('back') ?>
                         </a>
                     </div>
@@ -175,36 +190,59 @@
 
             <!-- Status Timeline Card -->
             <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header bg-transparent border-0 py-3">
-                    <h6 class="mb-0 fw-semibold"><?= Lang::getLocale() === 'ka' ? 'სტატუსის ისტორია' : 'Status History' ?></h6>
+                <div class="card-header bg-transparent border-0 py-3 px-4">
+                    <h6 class="mb-0 fw-semibold d-flex align-items-center">
+                        <i class="bi bi-clock-history me-2 text-info"></i>
+                        <?= Lang::getLocale() === 'ka' ? 'სტატუსის ისტორია' : 'Status History' ?>
+                    </h6>
                 </div>
-                <div class="card-body pt-0">
+                <div class="card-body pt-0 px-4 pb-4">
                     <div class="report-timeline">
                         <div class="report-timeline-item active">
-                            <strong><?= Lang::getLocale() === 'ka' ? 'გაგზავნილი' : 'Submitted' ?></strong>
-                            <p class="text-muted mb-0 small"><?= formatDate($report['created_at']) ?></p>
+                            <div class="timeline-icon bg-primary">
+                                <i class="bi bi-send-fill text-white"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <strong><?= Lang::getLocale() === 'ka' ? 'გაგზავნილი' : 'Submitted' ?></strong>
+                                <p class="text-muted mb-0 small"><?= formatDate($report['created_at']) ?></p>
+                            </div>
                         </div>
 
                         <?php if (in_array($report['status'], ['under_review', 'assessed', 'closed'])): ?>
                             <div class="report-timeline-item active">
-                                <strong><?= Lang::getLocale() === 'ka' ? 'განხილვაშია' : 'Under Review' ?></strong>
-                                <p class="text-muted mb-0 small"><?= Lang::getLocale() === 'ka' ? 'მინიჭებულია შემფასებელს' : 'Assigned to assessor' ?></p>
+                                <div class="timeline-icon bg-info">
+                                    <i class="bi bi-search text-white"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <strong><?= Lang::getLocale() === 'ka' ? 'განხილვაშია' : 'Under Review' ?></strong>
+                                    <p class="text-muted mb-0 small"><?= Lang::getLocale() === 'ka' ? 'მინიჭებულია შემფასებელს' : 'Assigned to assessor' ?></p>
+                                </div>
                             </div>
                         <?php endif; ?>
 
                         <?php if (in_array($report['status'], ['assessed', 'closed'])): ?>
                             <div class="report-timeline-item active">
-                                <strong><?= Lang::getLocale() === 'ka' ? 'შეფასებული' : 'Assessed' ?></strong>
-                                <p class="text-muted mb-0 small">
-                                    <?= $report['assessed_at'] ? formatDate($report['assessed_at']) : '' ?>
-                                </p>
+                                <div class="timeline-icon bg-success">
+                                    <i class="bi bi-check-lg text-white"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <strong><?= Lang::getLocale() === 'ka' ? 'შეფასებული' : 'Assessed' ?></strong>
+                                    <p class="text-muted mb-0 small">
+                                        <?= $report['assessed_at'] ? formatDate($report['assessed_at']) : '' ?>
+                                    </p>
+                                </div>
                             </div>
                         <?php endif; ?>
 
                         <?php if ($report['status'] === 'closed'): ?>
                             <div class="report-timeline-item active">
-                                <strong><?= Lang::getLocale() === 'ka' ? 'დახურული' : 'Closed' ?></strong>
-                                <p class="text-muted mb-0 small"><?= Lang::getLocale() === 'ka' ? 'არქივში' : 'Archived' ?></p>
+                                <div class="timeline-icon bg-secondary">
+                                    <i class="bi bi-archive text-white"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <strong><?= Lang::getLocale() === 'ka' ? 'დახურული' : 'Closed' ?></strong>
+                                    <p class="text-muted mb-0 small"><?= Lang::getLocale() === 'ka' ? 'არქივში' : 'Archived' ?></p>
+                                </div>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -212,15 +250,19 @@
             </div>
 
             <!-- Need Help Card -->
-            <div class="card border-0 bg-light">
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, rgba(91, 108, 242, 0.1), rgba(91, 108, 242, 0.05));">
                 <div class="card-body text-center py-4">
-                    <div class="mb-3">
-                        <i class="bi bi-headset text-primary" style="font-size: 2.5rem;"></i>
+                    <div class="icon-box icon-box-lg bg-primary-subtle mx-auto mb-3" style="width: 64px; height: 64px; border-radius: 16px;">
+                        <i class="bi bi-headset fs-3 text-primary"></i>
                     </div>
-                    <h6 class="fw-bold"><?= Lang::getLocale() === 'ka' ? 'გჭირდებათ დახმარება?' : 'Need Help?' ?></h6>
-                    <p class="text-muted small mb-0">
+                    <h6 class="fw-bold mb-2"><?= Lang::getLocale() === 'ka' ? 'გჭირდებათ დახმარება?' : 'Need Help?' ?></h6>
+                    <p class="text-muted small mb-3">
                         <?= Lang::getLocale() === 'ka' ? 'კითხვების შემთხვევაში დაგვიკავშირდით' : 'Contact our support team for questions' ?>
                     </p>
+                    <a href="#" class="btn btn-outline-primary btn-sm rounded-pill px-4">
+                        <i class="bi bi-chat-dots me-1"></i>
+                        <?= Lang::getLocale() === 'ka' ? 'მხარდაჭერა' : 'Contact Support' ?>
+                    </a>
                 </div>
             </div>
         </div>
@@ -237,41 +279,96 @@
     justify-content: center;
     font-size: 1.25rem;
 }
+.icon-box-sm {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+.icon-box-lg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .bg-primary-subtle {
-    background-color: rgba(99, 102, 241, 0.1) !important;
+    background-color: rgba(91, 108, 242, 0.12) !important;
 }
 .bg-success-subtle {
-    background-color: rgba(34, 197, 94, 0.1) !important;
+    background-color: rgba(16, 185, 129, 0.12) !important;
+}
+.bg-warning-subtle {
+    background-color: rgba(245, 158, 11, 0.12) !important;
+}
+.bg-danger-subtle {
+    background-color: rgba(239, 68, 68, 0.12) !important;
+}
+.bg-info-subtle {
+    background-color: rgba(59, 130, 246, 0.12) !important;
 }
 .bg-secondary-subtle {
-    background-color: rgba(108, 117, 125, 0.1) !important;
+    background-color: rgba(108, 117, 125, 0.12) !important;
+}
+
+/* Enhanced Timeline */
+.report-timeline {
+    position: relative;
 }
 .report-timeline-item {
     position: relative;
-    padding-left: 24px;
-    padding-bottom: 16px;
-    border-left: 2px solid var(--bs-gray-300);
-    margin-left: 8px;
+    display: flex;
+    align-items: flex-start;
+    padding-bottom: 1.5rem;
+    margin-left: 0;
 }
-.report-timeline-item:last-child {
-    border-left-color: transparent;
-    padding-bottom: 0;
-}
-.report-timeline-item::before {
+.report-timeline-item:not(:last-child)::after {
     content: '';
     position: absolute;
-    left: -6px;
-    top: 4px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--bs-gray-300);
+    left: 17px;
+    top: 36px;
+    width: 2px;
+    height: calc(100% - 24px);
+    background: var(--bs-gray-200);
 }
-.report-timeline-item.active::before {
-    background: var(--bs-primary, #6366f1);
+.report-timeline-item.active:not(:last-child)::after {
+    background: linear-gradient(180deg, var(--bs-primary) 0%, var(--bs-gray-200) 100%);
 }
-.report-timeline-item.active {
-    border-left-color: var(--bs-primary, #6366f1);
+.report-timeline-item:last-child {
+    padding-bottom: 0;
+}
+.timeline-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-right: 1rem;
+    font-size: 0.875rem;
+}
+.timeline-content {
+    padding-top: 4px;
+}
+
+/* Badge Styles */
+.badge-pending {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+}
+.badge-under_review {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+}
+.badge-assessed {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+.badge-closed {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+    color: white;
 }
 </style>
 
