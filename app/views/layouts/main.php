@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0">
     <meta name="csrf-token" content="<?= csrf_token() ?>">
-    <meta name="theme-color" content="#6366f1">
+    <meta name="theme-color" content="#5b6cf2">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="description" content="<?= Lang::getLocale() === 'ka' ? 'პროფესიონალური ავტო დაზიანების შეფასება' : 'Professional Auto Damage Assessment' ?>">
@@ -14,12 +14,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Google Fonts -->
+    <!-- Google Fonts - Extended -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Georgian:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Custom CSS with cache busting -->
-    <link href="<?= asset('css/style.css') ?>?v=2.0.<?= time() ?>" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Georgian:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Custom CSS v3.0 -->
+    <link href="<?= asset('css/style.css') ?>?v=3.0.<?= time() ?>" rel="stylesheet">
 
     <?php if (isset($extraCss)): ?>
         <?= $extraCss ?>
@@ -31,7 +31,7 @@
         <div class="container">
             <a class="navbar-brand" href="/">
                 <i class="bi bi-car-front-fill"></i>
-                <span><?= __('app_name') ?></span>
+                <span class="fw-bold"><?= __('app_name') ?></span>
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-label="Toggle navigation">
@@ -44,17 +44,17 @@
                     <ul class="navbar-nav me-auto d-none d-lg-flex">
                         <li class="nav-item">
                             <a class="nav-link <?= isActiveRoute('/dashboard') ? 'active' : '' ?>" href="/dashboard">
-                                <i class="bi bi-grid-1x2-fill me-1"></i><?= __('dashboard') ?>
+                                <i class="bi bi-grid-1x2-fill me-2"></i><?= __('dashboard') ?>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link <?= isActiveRoute('/vehicles') ? 'active' : '' ?>" href="/vehicles">
-                                <i class="bi bi-car-front-fill me-1"></i><?= __('vehicle.vehicles') ?>
+                                <i class="bi bi-car-front-fill me-2"></i><?= __('vehicle.vehicles') ?>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link <?= isActiveRoute('/reports') ? 'active' : '' ?>" href="/reports">
-                                <i class="bi bi-file-earmark-text-fill me-1"></i><?= __('report.reports') ?>
+                                <i class="bi bi-file-earmark-text-fill me-2"></i><?= __('report.reports') ?>
                             </a>
                         </li>
                     </ul>
@@ -62,18 +62,28 @@
                     <ul class="navbar-nav">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" data-bs-toggle="dropdown">
-                                <div class="d-flex align-items-center justify-content-center rounded-circle bg-white bg-opacity-25" style="width: 32px; height: 32px;">
+                                <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 36px; height: 36px; background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);">
                                     <i class="bi bi-person-fill text-white"></i>
                                 </div>
-                                <span class="d-none d-md-inline"><?= e(Session::getUser()['name'] ?? '') ?></span>
+                                <span class="d-none d-md-inline fw-medium"><?= e(Session::getUser()['name'] ?? '') ?></span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
+                                <li class="dropdown-header px-4 py-3">
+                                    <div class="fw-bold text-dark"><?= e(Session::getUser()['name'] ?? '') ?></div>
+                                    <div class="small text-muted"><?= e(Session::getUser()['phone'] ?? '') ?></div>
+                                </li>
+                                <li><hr class="dropdown-divider mx-3"></li>
                                 <li>
                                     <a class="dropdown-item" href="/profile">
-                                        <i class="bi bi-person"></i><?= __('profile.my_profile') ?>
+                                        <i class="bi bi-person-circle"></i><?= __('profile.my_profile') ?>
                                     </a>
                                 </li>
-                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="/vehicles">
+                                        <i class="bi bi-car-front"></i><?= __('vehicle.vehicles') ?>
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider mx-3"></li>
                                 <li>
                                     <a class="dropdown-item text-danger" href="/logout">
                                         <i class="bi bi-box-arrow-right"></i><?= __('auth.logout') ?>
@@ -83,12 +93,12 @@
                         </li>
                         <!-- Language Switcher -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                <?= Lang::getLocale() === 'ka' ? '🇬🇪' : '🇬🇧' ?>
+                            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" data-bs-toggle="dropdown">
+                                <span style="font-size: 1.25rem;"><?= Lang::getLocale() === 'ka' ? '🇬🇪' : '🇬🇧' ?></span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item <?= Lang::getLocale() === 'ka' ? 'active' : '' ?>" href="/language/ka">🇬🇪 ქართული</a></li>
-                                <li><a class="dropdown-item <?= Lang::getLocale() === 'en' ? 'active' : '' ?>" href="/language/en">🇬🇧 English</a></li>
+                                <li><a class="dropdown-item <?= Lang::getLocale() === 'ka' ? 'active' : '' ?>" href="/language/ka"><span class="me-2">🇬🇪</span> ქართული</a></li>
+                                <li><a class="dropdown-item <?= Lang::getLocale() === 'en' ? 'active' : '' ?>" href="/language/en"><span class="me-2">🇬🇧</span> English</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -96,22 +106,22 @@
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
                             <a class="nav-link" href="/login">
-                                <i class="bi bi-box-arrow-in-right me-1"></i><?= __('auth.login') ?>
+                                <i class="bi bi-box-arrow-in-right me-2"></i><?= __('auth.login') ?>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/register">
-                                <i class="bi bi-person-plus me-1"></i><?= __('auth.register') ?>
+                                <i class="bi bi-person-plus-fill me-2"></i><?= __('auth.register') ?>
                             </a>
                         </li>
                         <!-- Language Switcher -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                <?= Lang::getLocale() === 'ka' ? '🇬🇪' : '🇬🇧' ?>
+                                <span style="font-size: 1.25rem;"><?= Lang::getLocale() === 'ka' ? '🇬🇪' : '🇬🇧' ?></span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="/language/ka">🇬🇪 ქართული</a></li>
-                                <li><a class="dropdown-item" href="/language/en">🇬🇧 English</a></li>
+                                <li><a class="dropdown-item" href="/language/ka"><span class="me-2">🇬🇪</span> ქართული</a></li>
+                                <li><a class="dropdown-item" href="/language/en"><span class="me-2">🇬🇧</span> English</a></li>
                             </ul>
                         </li>
                     </ul>

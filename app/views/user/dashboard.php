@@ -1,12 +1,12 @@
 <div class="dashboard-header">
     <div class="container position-relative" style="z-index: 1;">
-        <div class="d-flex align-items-center gap-3 mb-2">
-            <div class="d-flex align-items-center justify-content-center rounded-circle bg-white bg-opacity-25" style="width: 56px; height: 56px;">
-                <i class="bi bi-person-fill text-white fs-3"></i>
+        <div class="d-flex align-items-center gap-4">
+            <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 64px; height: 64px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.3);">
+                <i class="bi bi-person-fill text-white" style="font-size: 1.75rem;"></i>
             </div>
             <div>
-                <p class="mb-0 opacity-75" style="font-size: 0.875rem;"><?= Lang::getLocale() === 'ka' ? 'კეთილი იყოს თქვენი მობრძანება' : 'Welcome back' ?></p>
-                <h1 class="mb-0"><?= e(explode(' ', $currentUser['name'])[0]) ?>!</h1>
+                <p class="mb-1 opacity-75" style="font-size: 0.9375rem;"><?= Lang::getLocale() === 'ka' ? 'კეთილი იყოს თქვენი მობრძანება' : 'Welcome back' ?> 👋</p>
+                <h1 class="mb-0" style="font-weight: 800; letter-spacing: -0.03em;"><?= e(explode(' ', $currentUser['name'])[0]) ?>!</h1>
             </div>
         </div>
     </div>
@@ -18,7 +18,7 @@
         <div class="col-6 col-lg-3">
             <div class="stat-card h-100 slide-up">
                 <div class="stat-icon stat-icon-primary">
-                    <i class="bi bi-file-earmark-text"></i>
+                    <i class="bi bi-file-earmark-text-fill"></i>
                 </div>
                 <div class="stat-value"><?= $stats['total_reports'] ?></div>
                 <div class="stat-label"><?= __('report.reports') ?></div>
@@ -45,7 +45,7 @@
         <div class="col-6 col-lg-3">
             <div class="stat-card success h-100 slide-up" style="animation-delay: 150ms;">
                 <div class="stat-icon stat-icon-success">
-                    <i class="bi bi-check-circle"></i>
+                    <i class="bi bi-check-circle-fill"></i>
                 </div>
                 <div class="stat-value"><?= $stats['assessed'] ?></div>
                 <div class="stat-label"><?= __('report.status_assessed') ?></div>
@@ -55,8 +55,9 @@
 
     <!-- Quick Action Button (Mobile) -->
     <div class="d-lg-none mb-4">
-        <a href="/reports/new" class="btn btn-primary btn-lg w-100">
-            <i class="bi bi-plus-circle me-2"></i><?= __('report.new_report') ?>
+        <a href="/reports/new" class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center gap-2">
+            <i class="bi bi-plus-circle-fill"></i>
+            <span><?= __('report.new_report') ?></span>
         </a>
     </div>
 
@@ -65,14 +66,18 @@
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 fw-bold">
-                        <i class="bi bi-file-earmark-text me-2 text-primary"></i><?= __('report.my_reports') ?>
+                    <h5 class="mb-0 fw-bold d-flex align-items-center gap-2">
+                        <span class="icon-box icon-box-sm bg-primary-subtle text-primary">
+                            <i class="bi bi-file-earmark-text-fill"></i>
+                        </span>
+                        <?= __('report.my_reports') ?>
                     </h5>
-                    <a href="/reports/new" class="btn btn-primary btn-sm d-none d-lg-inline-flex">
-                        <i class="bi bi-plus-lg me-1"></i><?= __('report.new_report') ?>
+                    <a href="/reports/new" class="btn btn-primary btn-sm d-none d-lg-inline-flex align-items-center gap-2">
+                        <i class="bi bi-plus-lg"></i>
+                        <span><?= __('report.new_report') ?></span>
                     </a>
                 </div>
-                <div class="card-body p-0 p-lg-3">
+                <div class="card-body p-0 p-lg-4">
                     <?php if (empty($recentReports)): ?>
                         <div class="empty-state">
                             <div class="empty-state-icon">
@@ -86,12 +91,12 @@
                         </div>
                     <?php else: ?>
                         <!-- Mobile: Card View -->
-                        <div class="d-lg-none stagger-in">
+                        <div class="d-lg-none stagger-in p-3">
                             <?php foreach ($recentReports as $report): ?>
                                 <a href="/reports/<?= $report['id'] ?>" class="report-card">
                                     <div class="report-card-header">
                                         <div class="report-card-title"><?= e($report['ticket_number']) ?></div>
-                                        <span class="badge <?= DamageReport::getStatusBadgeClass($report['status']) ?>">
+                                        <span class="badge badge-<?= $report['status'] ?>">
                                             <?= __('report.status_' . $report['status']) ?>
                                         </span>
                                     </div>
@@ -118,23 +123,37 @@
                                         <th><?= __('vehicle.vehicles') ?></th>
                                         <th><?= __('status') ?></th>
                                         <th><?= __('date') ?></th>
-                                        <th></th>
+                                        <th class="text-end"><?= Lang::getLocale() === 'ka' ? 'მოქმედება' : 'Action' ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php foreach ($recentReports as $report): ?>
                                         <tr>
-                                            <td><strong><?= e($report['ticket_number']) ?></strong></td>
-                                            <td><?= e($report['year']) ?> <?= e($report['make']) ?> <?= e($report['model']) ?></td>
                                             <td>
-                                                <span class="badge <?= DamageReport::getStatusBadgeClass($report['status']) ?>">
+                                                <span class="fw-bold text-primary"><?= e($report['ticket_number']) ?></span>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="icon-box icon-box-sm bg-primary-subtle text-primary">
+                                                        <i class="bi bi-car-front-fill"></i>
+                                                    </span>
+                                                    <div>
+                                                        <div class="fw-semibold"><?= e($report['make']) ?> <?= e($report['model']) ?></div>
+                                                        <div class="small text-muted"><?= e($report['year']) ?></div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-<?= $report['status'] ?>">
                                                     <?= __('report.status_' . $report['status']) ?>
                                                 </span>
                                             </td>
-                                            <td><?= formatDate($report['created_at']) ?></td>
                                             <td>
-                                                <a href="/reports/<?= $report['id'] ?>" class="btn btn-sm btn-outline-primary">
-                                                    <i class="bi bi-eye"></i>
+                                                <span class="text-muted"><?= formatDate($report['created_at']) ?></span>
+                                            </td>
+                                            <td class="text-end">
+                                                <a href="/reports/<?= $report['id'] ?>" class="btn btn-sm btn-light">
+                                                    <i class="bi bi-eye me-1"></i><?= Lang::getLocale() === 'ka' ? 'ნახვა' : 'View' ?>
                                                 </a>
                                             </td>
                                         </tr>
@@ -144,10 +163,10 @@
                         </div>
                         
                         <?php if ($stats['total_reports'] > 5): ?>
-                            <div class="text-center p-3">
-                                <a href="/reports" class="btn btn-outline-primary">
-                                    <?= Lang::getLocale() === 'ka' ? 'ყველა განაცხადი' : 'View All Reports' ?>
-                                    <i class="bi bi-arrow-right ms-1"></i>
+                            <div class="text-center p-4 border-top">
+                                <a href="/reports" class="btn btn-outline-primary d-inline-flex align-items-center gap-2">
+                                    <span><?= Lang::getLocale() === 'ka' ? 'ყველა განაცხადი' : 'View All Reports' ?></span>
+                                    <i class="bi bi-arrow-right"></i>
                                 </a>
                             </div>
                         <?php endif; ?>
@@ -160,16 +179,21 @@
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 fw-bold"><i class="bi bi-car-front-fill me-2 text-primary"></i><?= __('vehicle.my_vehicles') ?></h5>
-                    <a href="/vehicles/add" class="btn btn-outline-primary btn-sm">
+                    <h5 class="mb-0 fw-bold d-flex align-items-center gap-2">
+                        <span class="icon-box icon-box-sm bg-primary-subtle text-primary">
+                            <i class="bi bi-car-front-fill"></i>
+                        </span>
+                        <?= __('vehicle.my_vehicles') ?>
+                    </h5>
+                    <a href="/vehicles/add" class="btn btn-primary btn-icon btn-sm">
                         <i class="bi bi-plus-lg"></i>
                     </a>
                 </div>
                 <div class="card-body p-0">
                     <?php if (empty($vehicles)): ?>
-                        <div class="empty-state py-4">
-                            <div class="empty-state-icon">
-                                <i class="bi bi-car-front"></i>
+                        <div class="empty-state py-5">
+                            <div class="empty-state-icon" style="width: 80px; height: 80px;">
+                                <i class="bi bi-car-front" style="font-size: 2rem;"></i>
                             </div>
                             <p class="text-muted mb-3"><?= __('vehicle.no_vehicles') ?></p>
                             <a href="/vehicles/add" class="btn btn-sm btn-primary">
@@ -179,12 +203,12 @@
                     <?php else: ?>
                         <div class="stagger-in">
                             <?php foreach ($vehicles as $vehicle): ?>
-                                <a href="/vehicles/edit/<?= $vehicle['id'] ?>" class="vehicle-card">
-                                    <div class="vehicle-icon">
+                                <a href="/vehicles/edit/<?= $vehicle['id'] ?>" class="list-group-item list-group-item-action d-flex align-items-center gap-3 p-4">
+                                    <div class="icon-box bg-primary-subtle text-primary">
                                         <i class="bi bi-car-front-fill"></i>
                                     </div>
                                     <div class="flex-grow-1">
-                                        <div class="fw-semibold"><?= e($vehicle['make']) ?> <?= e($vehicle['model']) ?></div>
+                                        <div class="fw-bold"><?= e($vehicle['make']) ?> <?= e($vehicle['model']) ?></div>
                                         <div class="small text-muted">
                                             <?= e($vehicle['year']) ?>
                                             <?php if ($vehicle['plate_number']): ?>
@@ -196,7 +220,7 @@
                                 </a>
                             <?php endforeach; ?>
                         </div>
-                        <div class="p-3">
+                        <div class="p-4 border-top">
                             <a href="/vehicles" class="btn btn-outline-primary btn-sm w-100">
                                 <?= Lang::getLocale() === 'ka' ? 'ყველა მანქანა' : 'Manage Vehicles' ?>
                             </a>
@@ -208,21 +232,42 @@
             <!-- Quick Actions (Desktop) -->
             <div class="card mt-4 d-none d-lg-block">
                 <div class="card-header">
-                    <h5 class="mb-0 fw-bold"><i class="bi bi-lightning-charge-fill me-2 text-warning"></i><?= Lang::getLocale() === 'ka' ? 'სწრაფი მოქმედება' : 'Quick Actions' ?></h5>
+                    <h5 class="mb-0 fw-bold d-flex align-items-center gap-2">
+                        <span class="icon-box icon-box-sm bg-warning-subtle text-warning">
+                            <i class="bi bi-lightning-charge-fill"></i>
+                        </span>
+                        <?= Lang::getLocale() === 'ka' ? 'სწრაფი მოქმედება' : 'Quick Actions' ?>
+                    </h5>
                 </div>
                 <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <a href="/reports/new" class="btn btn-primary">
-                            <i class="bi bi-plus-circle me-2"></i><?= __('report.new_report') ?>
+                    <div class="d-grid gap-3">
+                        <a href="/reports/new" class="btn btn-primary d-flex align-items-center justify-content-center gap-2">
+                            <i class="bi bi-plus-circle-fill"></i>
+                            <span><?= __('report.new_report') ?></span>
                         </a>
-                        <a href="/vehicles/add" class="btn btn-outline-primary">
-                            <i class="bi bi-car-front me-2"></i><?= __('vehicle.add_vehicle') ?>
+                        <a href="/vehicles/add" class="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2">
+                            <i class="bi bi-car-front-fill"></i>
+                            <span><?= __('vehicle.add_vehicle') ?></span>
                         </a>
-                        <a href="/profile" class="btn btn-outline-secondary">
-                            <i class="bi bi-person me-2"></i><?= __('profile.edit_profile') ?>
+                        <a href="/profile" class="btn btn-light d-flex align-items-center justify-content-center gap-2">
+                            <i class="bi bi-person-gear"></i>
+                            <span><?= __('profile.edit_profile') ?></span>
                         </a>
                     </div>
                 </div>
+            </div>
+
+            <!-- Help Card -->
+            <div class="help-card mt-4 d-none d-lg-block">
+                <div class="help-card-icon">
+                    <i class="bi bi-question-circle-fill"></i>
+                </div>
+                <h6><?= Lang::getLocale() === 'ka' ? 'გჭირდებათ დახმარება?' : 'Need Help?' ?></h6>
+                <p><?= Lang::getLocale() === 'ka' ? 'დაგვიკავშირდით ნებისმიერ დროს' : 'Contact us anytime for support' ?></p>
+                <a href="tel:+995555000000" class="btn btn-sm btn-outline-primary mt-2">
+                    <i class="bi bi-telephone me-1"></i>
+                    <?= Lang::getLocale() === 'ka' ? 'დარეკვა' : 'Call Us' ?>
+                </a>
             </div>
         </div>
     </div>
